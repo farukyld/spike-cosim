@@ -43,10 +43,10 @@ bit simulation_completed()
 
 cosim'de son adımda register'lara yapılan yazmalara bakmak için:
 ```verilog
-get_log_reg_write(
+void get_log_reg_write(
   output commit_log_reg_item_t log_reg_write_o[CommitLogEntries]
   output int inserted_elements_o
-  )`
+  )
 ```
 bu fonksiyon, spike tarafından son çalıştırılan instruction'un yazdığı register'ları `log_reg_write_o` array'inin içine ekliyor. kaç tane eleman eklenmişse `inserted_elements_o`yu ona ayarlıyor.
 
@@ -54,45 +54,70 @@ bu fonksiyon, spike tarafından son çalıştırılan instruction'un yazdığı 
 
 ```verilog
 
-  typedef struct packed {
-    reg_key_t key;
-    freg_t value; // 128 bit, `basic_types_pkg` icinde tanimli.
-  } commit_log_reg_item_t;
+typedef struct packed {
+  reg_key_t key;
+  freg_t value; // 128 bit, `basic_types_pkg` icinde tanimli.
+} commit_log_reg_item_t;
 ```
 
 bu türü tanımlarken kullanılan türler:
 
 ```verilog
-  // reg_key_t de su sekilde
-  typedef union packed {
-    reg_t key; // 64 bit tek parca, `basic_types_pkg` icinde tanimli.
-    key_parts_t key_parts; // 64 bit key {60 bit id, 4 bit type}
-  } reg_key_t;
+// reg_key_t de su sekilde
+typedef union packed {
+  reg_t key; // 64 bit tek parca, `basic_types_pkg` icinde tanimli.
+  key_parts_t key_parts; // 64 bit key {60 bit id, 4 bit type}
+} reg_key_t;
 
 
-  // key parts tanimi:
-  typedef struct packed {
-    reg_id_t reg_id; // high 64 bit
-    reg_key_type_e reg_type; // low 4 bit.
-  } key_parts_t;
+// key parts tanimi:
+typedef struct packed {
+  reg_id_t reg_id; // high 64 bit
+  reg_key_type_e reg_type; // low 4 bit.
+} key_parts_t;
 
-  // register key type enum
-  // from riscv/decode_macros.h
-  typedef enum bit [REG_KEY_TYPE_W-1:0] {
-    XREG      = REG_KEY_TYPE_W'('b0000),
-    FREG      = REG_KEY_TYPE_W'('b0001),
-    VREG      = REG_KEY_TYPE_W'('b0010),
-    VREG_HINT = REG_KEY_TYPE_W'('b0011),
-    CSR       = REG_KEY_TYPE_W'('b0100)
-  } reg_key_type_e;
+// register key type enum
+// from riscv/decode_macros.h
+typedef enum bit [REG_KEY_TYPE_W-1:0] {
+  XREG      = REG_KEY_TYPE_W'('b0000),
+  FREG      = REG_KEY_TYPE_W'('b0001),
+  VREG      = REG_KEY_TYPE_W'('b0010),
+  VREG_HINT = REG_KEY_TYPE_W'('b0011),
+  CSR       = REG_KEY_TYPE_W'('b0100)
+} reg_key_type_e;
 
-  // csr_id'ler duz 0'dan 31'e dseklinde degil. onlar icin bu enum'u kullaniyoruz.
-  typedef csr_ids_pkg::csr_id_e csr_id_e;
+// csr_id'ler duz 0'dan 31'e dseklinde degil. onlar icin bu enum'u kullaniyoruz.
+typedef csr_ids_pkg::csr_id_e csr_id_e;
 
-  // diger id'ler duz 0'dan 31'e
-  typedef union packed {
-    bit [REG_KEY_ID_W-1:0] int_float_vec;
-    csr_id_e csr;
-  } reg_id_t;
+// diger id'ler duz 0'dan 31'e
+typedef union packed {
+  bit [REG_KEY_ID_W-1:0] int_float_vec;
+  csr_id_e csr;
+} reg_id_t;
 ```
 
+
+cosim'de son adımda yapılan memory read'lere bakmak için:
+```verilog
+void get_log_mem_read(
+    output commit_log_mem_item_t log_mem_read_o[CommitLogEntries],
+    output int inserted_elements_o
+  )
+```
+`commit_log_mem_item_t` türü:
+```verilog
+typedef  struct packed {
+  reg_t addr; // 64 bit
+  reg_t wdata; // 64 bit, okuma icin 0. yazma icin yazilan deger.
+  byte  len; // 8 bit. okuma uzunlugu. alabilecegi degerler: 1/2/4/8
+} commit_log_mem_item_t;
+```
+
+
+cosim'de son adımda yapılan memory write'lara bakmak için:
+```verilog
+void get_log_mem_write(
+    output commit_log_mem_item_t log_mem_write_o[CommitLogEntries],
+    output int inserted_elements_o
+  )
+```
