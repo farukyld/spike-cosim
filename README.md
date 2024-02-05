@@ -3,6 +3,9 @@
 - spike'ta değiştirmemiz gereken kaynak dosyaları var. bunları değiştirmeden önce yedeklemek isteyebilirsiniz. (eğer kendi dosyalarınızda yaptığınız değişiklikler de korunsun istiyorsanız [tam olarak neler eklenmeli]() bölümüne bakabilirsiniz.)
 
 ```bash
+# riscv-isa-sim klasoru tanimla:
+export SPIKE=
+# yedekleme klasoru tanimla:
 export SPIKE_BACKUP=$(SPIKE)/backup
 mkdir -p $(SPIKE_BACKUP)
 mkdir -p $(SPIKE_BACKUP)/riscv
@@ -21,11 +24,21 @@ değişiklik yapılmış kaynak kodlarını spike'ta ilgili yerlere kopyalıyoru
 NOT: bu yapacağımız işlem, ilgili yerlerde hâlihazırda aynı isimle mevcut dosyaların üzerine yazar.
 
 ```bash
-cp spike_products/changed_codes/riscv/processor.h $(SPIKE)/riscv
-cp spike_products/changed_codes/riscv/execute.cc $(SPIKE)/riscv
-cp spike_products/changed_codes/riscv/sim.h $(SPIKE)/riscv
-cp spike_products/changed_codes/riscv/sim.cc $(SPIKE)/riscv
-cp spike_products/changed_codes/fesvr/htif.h $(SPIKE)/fesvr
+cp degistirilen_kodlar/riscv/processor.h $(SPIKE)/riscv
+cp degistirilen_kodlar/riscv/execute.cc $(SPIKE)/riscv
+cp degistirilen_kodlar/riscv/sim.h $(SPIKE)/riscv
+cp degistirilen_kodlar/riscv/sim.cc $(SPIKE)/riscv
+cp degistirilen_kodlar/fesvr/htif.h $(SPIKE)/fesvr
+```
+
+spike'ın var olan derlenmiş hâlini güncelleyelim (install yapmıyoruz)
+
+bu yapacağımız işlem spike'ın kendi çalışmasını etkilemeyecek, sadece bizim cosim'de kullanacağımız bazı fonksiyonları library'lere ekliyor.
+
+```bash
+cd $(SPIKE)/build
+export N_THREADS=8
+sudo make -j$(N_THREADS)
 ```
 
 
