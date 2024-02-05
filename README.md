@@ -2,6 +2,8 @@
 
 - spike'ta değiştirmemiz gereken kaynak dosyaları var. bunları değiştirmeden önce kendinizinkileri yedeklemek isteyebilirsiniz. (eğer kendi dosyalarınızda yaptığınız değişiklikler de korunsun istiyorsanız [tam olarak neler eklenmeli]() bölümüne bakabilirsiniz.)
 
+spike (riscv-isa-sim repo'sunu indirdiğimiz directory) ve backup directory'lerini ayarlıyoruz.
+
 ```bash
 # riscv-isa-sim klasoru tanimla:
 export SPIKE=
