@@ -1,5 +1,4 @@
 #include "config.h"
-#define COSIMIF
 #include "sim.h"
 #include "mmu.h"
 #include "dts.h"
