@@ -1,1 +1,1 @@
-spike /home/usr1/riscv-isa-sim/a_tets_faruk/ornek_test_girdileri/pk_olmadan/outputs/hello.elf
+spike ../ornek_test_girdileri/pk_olmadan/outputs/hello.elf

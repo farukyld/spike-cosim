@@ -1,5 +1,9 @@
 // See LICENSE for license details.
-#include "----cosim/src/cpp/spike__cosim_common_conf.h"
+
+#include "spike-cosim/cosim/src/cpp/spike__cosim_common_conf.h"
+#ifndef SPIKE__COSIM_COMMON_CONF_H
+#error fix the above include statement
+#endif
 #include "config.h"
 #include "sim.h"
 #include "mmu.h"
