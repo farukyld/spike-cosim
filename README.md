@@ -72,3 +72,4 @@ echo "spike ${PWD}/ornek_test_girdileri/pk_olmadan/outputs/hello.elf" > cosim/lo
 cd cosim
 make run_with_compile_tb_spike_link
 ```
+- proxy-kernel ile örnekler gelecek.

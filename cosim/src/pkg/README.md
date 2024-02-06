@@ -121,3 +121,6 @@ void get_log_mem_write(
     output int inserted_elements_o
   )
 ```
+
+*** 
+### DPI ile import'lanan foknsiyonların hepsinin tanımı cosim/src/cpp/cosimif.cc'de

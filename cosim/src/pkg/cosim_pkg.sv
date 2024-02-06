@@ -21,9 +21,12 @@ package cosim_pkg;
     CSR       = REG_KEY_TYPE_W'('b0100)
   } reg_key_type_e;
 
+  // csr id enum cok buyuk olduğu icin ayri bir dosyaya koydum, aslinda burda durmasi gerekiyordu
+
+  // csr'larin ozel id'leri var
   typedef csr_ids_pkg::csr_id_e csr_id_e; // bunu disariya gostermek istiyorum.
 
-  // other ids are straightforward.
+  // diger id'ler duz 0'dan 31'e.
   typedef union packed {
     bit [REG_KEY_ID_W-1:0] int_float_vec;
     csr_id_e csr;
@@ -59,14 +62,22 @@ package cosim_pkg;
     byte  len;
   } commit_log_mem_item_t;
 
+  // spike simulation olusturur. command line argumanlarin hangi dosyadan okundugunu
+  // cosim/src/cpp/cosimif.cc:init() fonksiyonunun tanimindan degistirebilirsiniz.
   import "DPI-C" function void init();
 
+  // spike simulation'u bir adim ilerletir.
   import "DPI-C" function void step();
 
+  // simulation'da kosan kod, exitcode gonderdiyse 1 dondurur.
   import "DPI-C" function bit simulation_completed();
 
+  // cosim'in bir parcasi degil, adim adim ilerletip incelemek icin koydum. 
+  // "testbench'imde kullaniyorum.devam etmek icin bir tusa basiniz" yapmaya yariyor.
   import "DPI-C" function void wait_key();
 
+  // son simulation adiminda yapilan register write kayitlarini output parametresine yazar.
+  // kac tane eleman eklendiyse sayisini inserted_elements_o'ya yazar.
   function void get_log_reg_write(
     output commit_log_reg_item_t log_reg_write_o[CommitLogEntries],
     output int inserted_elements_o
@@ -84,7 +95,7 @@ package cosim_pkg;
     end
   endfunction
 
-
+  // son yapilan step'teki memory read islemleri
   function void get_log_mem_read(
     output commit_log_mem_item_t log_mem_read_o[CommitLogEntries],
     output int inserted_elements_o
@@ -105,7 +116,7 @@ package cosim_pkg;
 
   endfunction
 
-
+  // son yapilan step'teki memory write islemleri.
   function void get_log_mem_write(
     output commit_log_mem_item_t log_mem_write_o[CommitLogEntries],
     output int inserted_elements_o
@@ -126,10 +137,12 @@ package cosim_pkg;
 
   endfunction
 
-
+  
   // automatic -> defined variables are auto
   // default (static) -> defined variables are shared among
   // concurrent calls of that function. 13.4.2
+
+
   function automatic logic [63:0] pack_2x32_to64le (
     logic [31:0] parts[0:1]
   );
