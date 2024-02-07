@@ -37,6 +37,12 @@ spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir 
 (NOT: halihazırda derlemiş olduğunuz bir spike kurulumu varsa ve sıfırdan kurmakla zaman kaybetmek istemiyorsanız [kurulu_spike_uzerine.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/kurulu_spike_uzerine.md)'deki adımları takip edebilirsiniz. Fakat cosim'de kullanılan güncel spike versiyonuyla devam etmek için aşağıdaki adımları tavsiye ederiz.)
 
 ([esas repo](https://github.com/riscv-software-src/riscv-isa-sim#:~:text=major%20version%20number.-,Build%20Steps,-We%20assume%20that)'nun readme'sinden de yararlanabilirsiniz)
+
+- spike'ı kurmadan önce, eğer `riscv-gnu-toolchain`i henüz kurmadıysanız, kuracağınız directory'yi `RISCV` ortam değişkeni olarak tanımlayın:
+```bash
+# ~/.bashrc'ye (shell acildiginda source'lanan script) ekleyebilirsiniz
+export RISCV=/opt/riscv
+```
 ```bash
 git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
 ( # parantezler, shell'in icinde subshell olusturuyor. boylece "parent" shell, cd'lerden etkilenmemis oluyor.
