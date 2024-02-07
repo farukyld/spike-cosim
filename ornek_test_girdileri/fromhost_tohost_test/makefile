@@ -1,7 +1,7 @@
 all: .a.out .a.s
 
 .a.out:
-	riscv64-unknown-elf-gcc main.c
+	riscv64-unknown-elf-gcc -DDUMMY_TXT_PATH="\"$(CURDIR)/../../cosim/log/dummy.txt\"" main.c
 
 .a.s:
 	riscv64-unknown-elf-objdump -D a.out > a.s

@@ -4,8 +4,11 @@ int main(int argc, char **argv)
 {
   // printf("Hello World!\n");
   // printf("a icin deger girin\n");
-  char *file_path = "/home/usr1/riscv-isa-sim/"
-                    "a_tets_faruk/spike_link/log/dummy.txt";
+  #ifndef DUMMY_TXT_PATH
+  #define DUMMY_TXT_PATH "dummy.txt"
+  #warning DUMMY_TXT_PATH is not defined. Using default path: dummy.txt
+  #endif
+  const char *file_path = DUMMY_TXT_PATH;
   int a, b;
   printf("dosya aciliyor: %s\n", file_path);
 
