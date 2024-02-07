@@ -1,6 +1,6 @@
 #include "cosimif.h"
 #include "common.h"
-#include "spike__cosim_common_conf.h"
+#include "cosim_conf.h"
 #include "cosim_create_sim.h"
 #include "args_reader.h"
 #include "debug_header.h"
