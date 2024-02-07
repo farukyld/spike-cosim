@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "debug_header.h"
+#include <string>
+#include <cstring>
+
 
 // Helper function to count the number of arguments in a file
 static int count_args(const char *str)
@@ -98,9 +101,6 @@ argv_argc_t *read_args_from_file(const char *filename)
     return args;
 }
 
-
-#include <string>
-#include <cstring>
 
 std::string get_directory_path(const std::string& file_path) {
     size_t ind_last_dir_sep = file_path.find_last_of("/\\");

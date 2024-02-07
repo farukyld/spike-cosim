@@ -1,5 +1,5 @@
 // See LICENSE for license details.
-#include "spike__cosim_common_conf.h"
+#include "cosim_conf.h"
 #include "cosim_create_sim.h"
 #include "debug_header.h"
 #include "config.h"
@@ -635,12 +635,18 @@ sim_t *create_sim_with_args(int argc, char **argv)
   // bu asagidakini cfg degisiyor mu diye bakmak icin koymustum
   // start_pc yanlis deger hatasi icin
   // printf("****cosim_create found pc in args: %s\n", s);
+  #ifdef DISABLE_INTERACTIVE_MODE
+  bool disable_interactive_mode = true;
+  #else
+  bool disable_interactive_mode = false;
+  #endif
+
   #if DEBUG_LEVEL >= DEBUG_WARN
   std::cout <<__FILE__<<":"<<__LINE__<< " cfg start_pc has value: " << cfg.start_pc.has_value() <<std::endl;
   #endif
   sim_t *simulation_object = new sim_t(&cfg, halted,
                                       mems, plugin_device_factories, htif_args, dm_config, log_path, dtb_enabled, dtb_file,
-                                      socket,
+                                      socket,disable_interactive_mode,
                                       cmd_file);
                                       
   #if DEBUG_LEVEL >= DEBUG_WARN
