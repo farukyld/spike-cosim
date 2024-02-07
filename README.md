@@ -92,7 +92,7 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 
 - `ornek_test_girdileri/pk_olmadan` örneğini kullanarak bir `elf` dosyası oluşturalım. Bu elf dosyasını oluştururken [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'in elf derleyicisini kullanacağız.
 
-NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kernel`i kurarken sıkıntı yaşamamak için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/proxy-kernel.md#:~:text=Burada%2C%20ben%20kurulum%20yapmaya%20%C3%A7al%C4%B1%C5%9F%C4%B1rken)'ye göz atmanızı tavsiye ederim. Riscv proxy-kernel kullanmayacaksanız (yalnızca bare-metal kod çalıştıracaksanız) bu NOT'u görmezden gelebilirsiniz. 
+NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kernel`i kurarken sıkıntı yaşamamak için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/proxy-kernel.md#:~:text=Burada%2C%20ben%20kurulum%20yapmaya%20%C3%A7al%C4%B1%C5%9F%C4%B1rken)'ye göz atmanızı tavsiye ederim. Riscv proxy-kernel kullanmayacaksanız (yalnızca bare-metal kod çalıştıracaksanız) bu NOT'u görmezden gelebilirsiniz. 
 
 
 ```bash

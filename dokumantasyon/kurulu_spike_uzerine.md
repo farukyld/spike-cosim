@@ -30,11 +30,13 @@ cp ${SPIKE}/fesvr/htif.h ${SPIKE_BACKUP}/fesvr/htif_${timestamp}.h
 NOT: bu yapacağımız işlem, ilgili yerlerde hâlihazırda aynı isimle mevcut dosyaların üzerine yazar.
 
 ```bash
-cp degistirilen_kodlar/riscv/processor.h ${SPIKE}/riscv
-cp degistirilen_kodlar/riscv/execute.cc ${SPIKE}/riscv
-cp degistirilen_kodlar/riscv/sim.h ${SPIKE}/riscv
-cp degistirilen_kodlar/riscv/sim.cc ${SPIKE}/riscv
-cp degistirilen_kodlar/fesvr/htif.h ${SPIKE}/fesvr
+git submodule update --init riscv-isa-sim # riscv-isa-sim sumbodule'unu guncelle
+
+cp riscv-isa-sim/riscv/processor.h ${SPIKE}/riscv
+cp riscv-isa-sim/riscv/execute.cc ${SPIKE}/riscv
+cp riscv-isa-sim/riscv/sim.h ${SPIKE}/riscv
+cp riscv-isa-sim/riscv/sim.cc ${SPIKE}/riscv
+cp riscv-isa-sim/fesvr/htif.h ${SPIKE}/fesvr
 ```
 NOT: bu işlemi yaptıktan sonra `${SPIKE}/riscv/sim.cc`de ilk satırdaki `#include` directive'ini `cosim/src/cpp/spike__cosim_common_conf.h`i gösterecek şekilde düzeltmemiz gerekiyor. 
 - spike'ın var olan derlenmiş hâlini güncelliyoruz. (install yapmıyoruz)
