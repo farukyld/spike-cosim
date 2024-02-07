@@ -22,7 +22,7 @@ Cosim'i kullanmak için:
     `cosim/src/pkg`deki dosyaları ve bu sv `package`larını kullanan bir top modul'ü (`cosim/src/tb` içerisinde örnek bir testbench var) veriyoruz.
   - `include` search path olarak (gcc `-I` flag'i) bunları tanıtmamız gerekiyor:
 ```makefile
-  SPIKE := riscv-isa-sim # spike'in yerel kopyasi
+  SPIKE := /home/usr1/spike-cosim/riscv-isa-sim # spike'in yerel kopyasi
   INC_DIRS := -I$(SPIKE)/build
   INC_DIRS += -I$(SPIKE)/riscv
   INC_DIRS += -I$(SPIKE)/fesvr
