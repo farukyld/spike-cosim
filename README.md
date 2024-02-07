@@ -172,7 +172,7 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
   [sudo] make -j8 # -j8'i degistirmek isteyebilirsiniz.
 )
 ```
-    - daha sonra şu satırları `~/.bashrc`ye ekleyebilirsiniz:
+  - daha sonra şu satırları `~/.bashrc`ye ekleyebilirsiniz:
 ```bash
 export RISCV=/opt/riscv
 export PATH=$RISCV/bin:$PATH
