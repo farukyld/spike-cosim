@@ -20,22 +20,35 @@ Cosim'i kullanmak için:
     spike kurulumunun çıktısı olan `libriscv.so` ve `libspike_dasm.a` ile `cosim/src/cpp`de bulunan kaynak kodlarını, 
   - sv kaynağı olarak:
     `cosim/src/pkg`deki dosyaları ve bu sv `package`larını kullanan bir top modul'ü (`cosim/src/tb` içerisinde örnek bir testbench var) veriyoruz.
+  - `include` search path olarak (gcc `-I` flag'i) bunları tanıtmamız gerekiyor:
+```makefile
+  SPIKE := riscv-isa-sim # spike'in yerel kopyasi
+  INC_DIRS := -I$(SPIKE)/build
+  INC_DIRS += -I$(SPIKE)/riscv
+  INC_DIRS += -I$(SPIKE)/fesvr
+  INC_DIRS += -I$(SPIKE)/
+  INC_DIRS += -I$(SPIKE)/softfloat
+  INC_DIRS += -I$(SPIKE)/fdt
+```
 ***
 ## Spike Kurulumu
-- spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir zararı yok, spike'ın normal çalışmasını etkilemez fakat gereksiz yere install etmesini beklemiş oluruz.)
+spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir zararı yok, spike'ın normal çalışmasını etkilemez fakat gereksiz yere install etmesini beklemiş oluruz.)
 
 (NOT: halihazırda derlemiş olduğunuz bir spike kurulumu varsa ve sıfırdan kurmakla zaman kaybetmek istemiyorsanız [kurulu_spike_uzerine.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/kurulu_spike_uzerine.md)'deki adımları takip edebilirsiniz. Fakat cosim'de kullanılan güncel spike versiyonuyla devam etmek için aşağıdaki adımları tavsiye ederiz.)
 
 ([esas repo](https://github.com/riscv-software-src/riscv-isa-sim#:~:text=major%20version%20number.-,Build%20Steps,-We%20assume%20that)'nun readme'sinden de yararlanabilirsiniz)
 ```bash
-cd riscv-isa-sim
-apt-get install device-tree-compiler
-mkdir build
-cd build
-../configure --prefix=$RISCV
-make -j8
-
+git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
+( # parantezler, shell'in icinde subshell olusturuyor. boylece "parent" shell, cd'lerden etkilenmemis oluyor.
+  cd riscv-isa-sim
+  apt-get install device-tree-compiler
+  mkdir build
+  cd build
+  ../configure --prefix=$RISCV
+  make -j8 # burayi degistirmek isteyebilirsiniz
+)
 ```
+
 ***
 ## Verilator Kurulumu
 
@@ -51,22 +64,24 @@ ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/ins
 #sudo apt-get install libfl2  # Ubuntu only (ignore if gives error)
 #sudo apt-get install libfl-dev  # Ubuntu only (ignore if gives error)
 #sudo apt-get install zlibc zlib1g zlib1g-dev  # Ubuntu only (ignore if gives error)
+(
+  cd .. # verilator'u spike-cosim repo'sunun altina clone'lamayalim.
+  git clone https://github.com/verilator/verilator   # Only first time
 
-git clone https://github.com/verilator/verilator   # Only first time
+  cd verilator
+  git pull         # Make sure git repository is up-to-date
+  git tag          # See what versions exist
+  #git checkout master      # Use development branch (e.g. recent bug fixes)
+  #git checkout stable      # Use most recent stable release
+  #git checkout v{version}  # Switch to specified release version
 
-cd verilator
-git pull         # Make sure git repository is up-to-date
-git tag          # See what versions exist
-#git checkout master      # Use development branch (e.g. recent bug fixes)
-#git checkout stable      # Use most recent stable release
-#git checkout v{version}  # Switch to specified release version
-
-autoconf         # Create ./configure script
-./configure      # Configure and create Makefile
-make -j8         # Build Verilator itself (if error, try just 'make')
+  autoconf         # Create ./configure script
+  ./configure      # Configure and create Makefile
+  make -j8         # Build Verilator itself
+)
 ```
 
-şunları `~/.bashrc`ye (ubuntu için adı ~/.bashrc, bir shell açıldığında `source`lanan script.) ekliyoruz:
+şunları `~/.bashrc`ye (ubuntu için adı `~/.bashrc`, bir shell açıldığında `source`lanan script.) ekliyoruz:
 
 ```bash
 # git clone yaptigimizda nereye indirdiysek, mesela 
@@ -78,7 +93,10 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 
 ***
 ## Cosim Örnek Kullanımı
-
+`cosim/makefile` içindeki kurallar, cosim'i kullanan örnek testbench'i derlerken `SPIKE` environment variable'ının tanımlı olduğu varsayımı üzerine yazılmıştır. Bu variable'ı spike yerel kopyanızın bulunduğu directory'yi gösterecek şekilde ayarlıyoruz:
+```bash
+export SPIKE=riscv-isa-sim 
+```
 ### Baremetal örnek
 
 - cosim'i kullanan örnek testbench'i verilator ile derleyelim.

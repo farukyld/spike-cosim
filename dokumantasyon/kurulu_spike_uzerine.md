@@ -4,10 +4,10 @@ Spike'ın kurulu bir versiyonuna zaten sahipseniz ve spike'ı sıfırdan derleme
 
 - spike'ta değiştirmemiz gereken kaynak dosyaları var. bunları değiştirmeden önce kendinizinkileri yedeklemek isteyebilirsiniz. 
 
-spike (riscv-isa-sim repo'sunu indirdiğimiz directory) ve backup directory'lerini ayarlıyoruz.
+- spike (riscv-isa-sim repo'sunu indirdiğimiz directory) ve backup directory'lerini ayarlıyoruz.
 
 ```bash
-# riscv-isa-sim klasoru tanimla:
+# hazir riscv-isa-sim clone'unun bulundugu directory'yi tanimla:
 export SPIKE=
 # yedekleme klasoru tanimla:
 export SPIKE_BACKUP=${SPIKE}/backup
@@ -27,25 +27,25 @@ cp ${SPIKE}/fesvr/htif.h ${SPIKE_BACKUP}/fesvr/htif_${timestamp}.h
 - değişiklik yapılmış kaynak kodlarını spike'ta ilgili yerlere kopyalıyoruz. 
 
 
-NOT: bu yapacağımız işlem, ilgili yerlerde hâlihazırda aynı isimle mevcut dosyaların üzerine yazar.
+  **NOT:** bu yapacağımız işlem, ilgili yerlerde hâlihazırda aynı isimle mevcut dosyaların üzerine yazar.
 
 ```bash
 git submodule update --init riscv-isa-sim # riscv-isa-sim sumbodule'unu guncelle
 
+# submodule'deki dosyalari hazir kurulumumuzun oldugu yere kopyaliyoruz.
 cp riscv-isa-sim/riscv/processor.h ${SPIKE}/riscv
 cp riscv-isa-sim/riscv/execute.cc ${SPIKE}/riscv
 cp riscv-isa-sim/riscv/sim.h ${SPIKE}/riscv
 cp riscv-isa-sim/riscv/sim.cc ${SPIKE}/riscv
 cp riscv-isa-sim/fesvr/htif.h ${SPIKE}/fesvr
 ```
-NOT: bu işlemi yaptıktan sonra `${SPIKE}/riscv/sim.cc`de ilk satırdaki `#include` directive'ini `cosim/src/cpp/spike__cosim_common_conf.h`i gösterecek şekilde düzeltmemiz gerekiyor. 
+
 - spike'ın var olan derlenmiş hâlini güncelliyoruz. (install yapmıyoruz)
 
-bu yapacağımız işlem spike'ın kendi çalışmasını etkilemeyecek, sadece bizim cosim'de kullanacağımız bazı fonksiyonları library'lere ekliyor.
+  **NOT:** bu yapacağımız işlem spike'ın kendi çalışmasını etkilemeyecek, sadece bizim cosim'de kullanacağımız bazı fonksiyonları library'lere ekliyor.
 
 
 ```bash
 cd ${SPIKE}/build
-export N_THREADS=8
-sudo make -j${N_THREADS}
+sudo make -j8 # burayi degistirmek isteyebilirsiniz
 ```
