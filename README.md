@@ -47,7 +47,7 @@ export RISCV=/opt/riscv
 git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
 ( # parantezler, shell'in icinde subshell olusturuyor. boylece "parent" shell, cd'lerden etkilenmemis oluyor.
   cd riscv-isa-sim
-  apt-get install device-tree-compiler
+  [sudo] apt-get install device-tree-compiler
   mkdir build
   cd build
   ../configure --prefix=$RISCV # riscv tool'larinin kurulu oldugu directory
