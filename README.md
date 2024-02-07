@@ -140,13 +140,18 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
 ```
 
   NOT: burada hata alinirsa `sudo apt-get update`, yine hata alınırsa aşağıdaki sayfalara bakabilirsiniz: (burayı özetlemeliyim ~faruk)
-    - https://askubuntu.com/questions/378558/unable-to-locate-package-while-trying-to-install-packages-with-apt
-    - https://help.ubuntu.com/community/AptGet/Offline/Repository
-    - https://packages.ubuntu.com/focal/zlibc
-    - https://packages.ubuntu.com/focal/
-    - https://help.ubuntu.com/community/Repositories/CommandLine
 
-  - newlib kurulumu (alternatif olarak linux kurulumu da var ama hiç gerek duymadım)
+  - https://askubuntu.com/questions/378558/unable-to-locate-package-while-trying-to-install-packages-with-apt
+  
+  - https://help.ubuntu.com/community/AptGet/Offline/Repository
+  
+  - https://packages.ubuntu.com/focal/zlibc
+  
+  - https://packages.ubuntu.com/focal/
+  
+  - https://help.ubuntu.com/community/Repositories/CommandLine
+
+    - newlib kurulumu (alternatif olarak linux kurulumu da var ama hiç gerek duymadım)
 
 **NOT:** riscv-gnu-toolchain repo'sunu clone'lamak uzun sürecektir. repo yaklaşık 6GB.
 **NOT:** `/opt/riscv`ın içine kurulum yapılıyor.
