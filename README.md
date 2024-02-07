@@ -15,7 +15,7 @@ void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* ins
 
 Cosim'i kullanmak için:
 - spike'ın cosim için değiştirilmiş hâlini kurmalıyız.
-- DPI bağlantısını kuracak olan araca (verilator/questa/xcelium);
+- DPI bağlantısını kuracak olan araca (verilator/questa/xcelium, ben verilator'u kullandım);
   - cpp kaynağı olarak:
     spike kurulumunun çıktısı olan `libriscv.so` ve `libspike_dasm.a` ile `cosim/src/cpp`de bulunan kaynak kodlarını, 
   - sv kaynağı olarak:
@@ -88,7 +88,11 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 )
 ```
 
-- `ornek_test_girdileri/pk_olmadan` örneğini kullanarak bir `elf` dosyası oluşturalım. 
+- `ornek_test_girdileri/pk_olmadan` örneğini kullanarak bir `elf` dosyası oluşturalım. Bu elf dosyasını oluştururken [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'in elf derleyicisini kullanacağız.
+
+NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kernel`i kurarken sıkıntı yaşamamak için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/proxy-kernel.md#:~:text=Burada%2C%20ben%20kurulum%20yapmaya%20%C3%A7al%C4%B1%C5%9F%C4%B1rken)'ye göz atmanızı tavsiye ederim. Riscv proxy-kernel kullanmayacaksanız (yalnızca bare-metal kod çalıştıracaksanız) bu NOT'u görmezden gelebilirsiniz. 
+
+
 ```bash
 (
   cd ornek_test_girdileri/pk_olmadan
