@@ -1,1 +1,1 @@
-spike ../ornek_test_girdileri/pk_olmadan/outputs/hello.elf
+spike /home/usr1/spike-cosim/ornek_test_girdileri/pk_olmadan/outputs/hello.elf

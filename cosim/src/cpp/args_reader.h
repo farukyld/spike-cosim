@@ -5,6 +5,8 @@
 #ifndef ARGS_READER_H
 #define ARGS_READER_H
 
+#include <string>
+
 // Structure to hold argc and argv
 typedef struct {
     int argc;

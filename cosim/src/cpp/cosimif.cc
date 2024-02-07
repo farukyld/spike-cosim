@@ -18,19 +18,17 @@ std::queue<reg_t> fromhost_queue;
 // !!! fromhost_calback reg_t alan, void donduren bir std::function
 std::function<void(reg_t)> fromhost_callback;
 
+
 void init()
 {
-  // allocate an empty string of size 256
-  char args_filepath[256];
+  #ifndef ARGS_FILE_PATH
+  #define ARGS_FILE_PATH "args.txt"
+  #warning ARGS_FILE_PATH is not defined. Using default value: "args.txt"
+  #endif
 
-  // find the directory of the current cpp file in the file system
-  auto curr_dir = get_directory_path(__FILE__);
+  const char *args_filepath = ARGS_FILE_PATH;
 
   // route to the args.txt file from the current directory
-  sprintf(args_filepath,"%s/../../log/args.txt", curr_dir.c_str());
-
-  // you can replace the above args.txt filepath calculation with a hardcoded path
-
 
   printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, args_filepath);
 
