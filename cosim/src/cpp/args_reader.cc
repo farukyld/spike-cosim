@@ -97,3 +97,17 @@ argv_argc_t *read_args_from_file(const char *filename)
 
     return args;
 }
+
+
+#include <string>
+#include <cstring>
+
+std::string get_directory_path(const std::string& file_path) {
+    size_t ind_last_dir_sep = file_path.find_last_of("/\\");
+    if (ind_last_dir_sep != std::string::npos) {
+        return file_path.substr(0, ind_last_dir_sep);
+    }
+    fprintf(stderr,__FILE__ ":%d: cannot extract the directory containing %s",__LINE__, file_path);
+    exit(1);
+    return "";
+}

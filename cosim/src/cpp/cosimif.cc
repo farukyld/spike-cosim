@@ -20,10 +20,21 @@ std::function<void(reg_t)> fromhost_callback;
 
 void init()
 {
-  auto filename = "/home/usr1/riscv-isa-sim/a_tets_faruk/spike_link/log/args.txt";
-  printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, filename);
+  // allocate an empty string of size 256
+  char args_filepath[256];
 
-  auto argc_argv = read_args_from_file(filename);
+  // find the directory of the current cpp file in the file system
+  auto curr_dir = get_directory_path(__FILE__);
+
+  // route to the args.txt file from the current directory
+  sprintf(args_filepath,"%s/../../log/args.txt", curr_dir.c_str());
+
+  // you can replace the above args.txt filepath calculation with a hardcoded path
+
+
+  printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, args_filepath);
+
+  auto argc_argv = read_args_from_file(args_filepath);
 
   simulation_object = create_sim_with_args(argc_argv->argc, argc_argv->argv);
 
