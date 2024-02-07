@@ -92,9 +92,10 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 
 ***
 ## Cosim Örnek Kullanımı
-`cosim/makefile` içindeki kurallar, cosim'i kullanan örnek testbench'i derlerken `SPIKE` environment variable'ının tanımlı olduğu varsayımı üzerine yazılmıştır. Bu variable'ı spike yerel kopyanızın bulunduğu directory'yi gösterecek şekilde ayarlıyoruz:
+`cosim/makefile` içindeki kurallar, cosim'i kullanan örnek testbench'i derlerken `SPIKE` environment variable'ının tanımlı olduğu varsayımı üzerine yazılmıştır. Bu variable'ı spike yerel kopyanızın bulunduğu directory'yi gösterecek şekilde mutlak yol olarak ayarlıyoruz:
 ```bash
-export SPIKE=riscv-isa-sim 
+
+export SPIKE=/home/usr1/spike-cosim/riscv-isa-sim 
 ```
 ### Baremetal örnek
 
@@ -103,6 +104,7 @@ export SPIKE=riscv-isa-sim
 ```bash
 (
   cd cosim
+  make clean_tb_spike_link
   make compile_tb_spike_link
 )
 ```
@@ -169,6 +171,11 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
   ./configure --prefix=/opt/riscv --with-arch=rv64imafdc_zifencei
   [sudo] make -j8 # -j8'i degistirmek isteyebilirsiniz.
 )
+```
+    - daha sonra şu satırları `~/.bashrc`ye ekleyebilirsiniz:
+```bash
+export RISCV=/opt/riscv
+export PATH=$RISCV/bin:$PATH
 ```
 ***
 #### proxy-kernel kurulumu
