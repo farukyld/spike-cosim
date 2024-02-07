@@ -79,6 +79,8 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 ***
 ## Cosim Örnek Kullanımı
 
+### Baremetal örnek
+
 - cosim'i kullanan örnek testbench'i verilator ile derleyelim.
 
 ```bash
@@ -111,4 +113,7 @@ echo "spike ${PWD}/ornek_test_girdileri/pk_olmadan/outputs/hello.elf" > cosim/lo
 cd cosim
 make run_with_compile_tb_spike_link
 ```
+***
+### proxy-kernel ile örnek
+
 - proxy-kernel ile örnekler gelecek.
