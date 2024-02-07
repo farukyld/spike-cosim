@@ -44,8 +44,8 @@ git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
   apt-get install device-tree-compiler
   mkdir build
   cd build
-  ../configure --prefix=$RISCV
-  make -j8 # burayi degistirmek isteyebilirsiniz
+  ../configure --prefix=$RISCV # riscv tool'larinin kurulu oldugu directory
+  [sudo] make -j8 # -j8'i degistirmek isteyebilirsiniz
 )
 ```
 
@@ -65,16 +65,9 @@ ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/ins
 #sudo apt-get install libfl-dev  # Ubuntu only (ignore if gives error)
 #sudo apt-get install zlibc zlib1g zlib1g-dev  # Ubuntu only (ignore if gives error)
 (
-  cd .. # verilator'u spike-cosim repo'sunun altina clone'lamayalim.
-  git clone https://github.com/verilator/verilator   # Only first time
-
+  cd .. # verilator'u spike-cosim repo'sunun altina clone'lamayalim, bir ust directory'ye gecelim.
+  git clone https://github.com/verilator/verilator
   cd verilator
-  git pull         # Make sure git repository is up-to-date
-  git tag          # See what versions exist
-  #git checkout master      # Use development branch (e.g. recent bug fixes)
-  #git checkout stable      # Use most recent stable release
-  #git checkout v{version}  # Switch to specified release version
-
   autoconf         # Create ./configure script
   ./configure      # Configure and create Makefile
   make -j8         # Build Verilator itself
@@ -128,10 +121,83 @@ echo "spike ${PWD}/ornek_test_girdileri/pk_olmadan/outputs/hello.elf" > cosim/lo
 - `tb_spike_link`i koşalım:
 
 ```bash
-cd cosim
-make run_with_compile_tb_spike_link
+(
+  cd cosim
+  make run_with_compile_tb_spike_link
+)
 ```
 ***
 ### proxy-kernel ile örnek
 
-- proxy-kernel ile örnekler gelecek.
+proxy-kernel'in kısa bir açıklaması için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/proxy-kernel.md)'ye bakabilirsiniz.
+
+#### RISCV-GNU-Toolchain kurulumu
+- proxy-kernel'i kurmak için önce [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i kurmamız gerek:
+
+  - prerequisite'ler:
+```bash
+sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev
+```
+
+  NOT: burada hata alinirsa `sudo apt-get update`, yine hata alınırsa aşağıdaki sayfalara bakabilirsiniz: (burayı özetlemeliyim ~faruk)
+    - https://askubuntu.com/questions/378558/unable-to-locate-package-while-trying-to-install-packages-with-apt
+    - https://help.ubuntu.com/community/AptGet/Offline/Repository
+    - https://packages.ubuntu.com/focal/zlibc
+    - https://packages.ubuntu.com/focal/
+    - https://help.ubuntu.com/community/Repositories/CommandLine
+
+  - newlib kurulumu (alternatif olarak linux kurulumu da var ama hiç gerek duymadım)
+
+**NOT:** riscv-gnu-toolchain repo'sunu clone'lamak uzun sürecektir. repo yaklaşık 6GB.
+**NOT:** `/opt/riscv`ın içine kurulum yapılıyor.
+```bash
+(
+  cd .. # spike-cosim'in icine clone'lamayalim, bir ust directory'ye gecelim
+  git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git
+  cd riscv-gnu-toolchain
+  ./configure --prefix=/opt/riscv --with-arch=rv64imafdc_zifencei
+  [sudo] make -j8 # -j8'i degistirmek isteyebilirsiniz.
+)
+```
+***
+#### proxy-kernel kurulumu
+
+riscv proxy-kernel için:
+
+```bash
+(
+  cd .. # spike-cosim'in icine clone'lamayalim, bir ust directory'ye gecelim
+  git clone https://github.com/riscv-software-src/riscv-pk.git
+  cd riscv-pk
+  mkdir build
+  cd build
+  ../configure --prefix=/opt/riscv --host=riscv64-unknown-elf --with-arch=rv64imafdc_zifencei
+  make -j8 # -j8'i degistirmek isteyebilirsiniz.
+  [sudo] make -j8 install
+)
+```
+***
+
+- bunları yaptıktan sonra cosim'i proxy-kernel ile denemek için test girdimizi derleyelim
+```bash
+(
+  cd ornek_test_girdileri/fromhost_tohost_test
+  make all
+)
+```
+
+- args.txt'yi az önce derlediğimiz .elf dosyasını pk ile kullanacak şekilde değiştirelim:
+
+```bash
+echo "spike pk ${PWD}/ornek_test_girdileri/ornek_test_girdileri/fromhost_tohost_test/a.out" > cosim/log/args.txt
+```
+
+- örnek testbench'i derleyip koşalım:
+
+```bash
+(
+  cd cosim
+  make run_with_compile_tb_spike_link
+)
+```
+
