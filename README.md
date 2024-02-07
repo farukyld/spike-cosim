@@ -38,7 +38,7 @@ spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir 
 
 ([esas repo](https://github.com/riscv-software-src/riscv-isa-sim#:~:text=major%20version%20number.-,Build%20Steps,-We%20assume%20that)'nun readme'sinden de yararlanabilirsiniz)
 
-- spike'ı kurmadan önce, eğer `riscv-gnu-toolchain`i henüz kurmadıysanız, kuracağınız directory'yi `RISCV` ortam değişkeni olarak tanımlayın:
+- spike'ı kurmadan önce, [eğer riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i henüz kurmadıysanız, kuracağınız directory'yi `RISCV` ortam değişkeni olarak tanımlayın:
 ```bash
 # ~/.bashrc'ye (shell acildiginda source'lanan script) ekleyebilirsiniz
 export RISCV=/opt/riscv
