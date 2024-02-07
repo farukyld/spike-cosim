@@ -22,7 +22,9 @@ Cosim'i kullanmak için:
     `cosim/src/pkg`deki dosyaları ve bu sv `package`larını kullanan bir top modul'ü (`cosim/src/tb` içerisinde örnek bir testbench var) veriyoruz.
   - `include` search path olarak (gcc `-I` flag'i) bunları tanıtmamız gerekiyor:
 ```makefile
-  SPIKE := /home/usr1/spike-cosim/riscv-isa-sim # spike'in yerel kopyasi
+  # spike-cosim/riscv-isa-sim'in absolute path'i.
+  SPIKE := 
+
   INC_DIRS := -I$(SPIKE)/build
   INC_DIRS += -I$(SPIKE)/riscv
   INC_DIRS += -I$(SPIKE)/fesvr
@@ -44,6 +46,7 @@ spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir 
 export RISCV=/opt/riscv
 ```
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
 ( # parantezler, shell'in icinde subshell olusturuyor. boylece "parent" shell, cd'lerden etkilenmemis oluyor.
   cd riscv-isa-sim
@@ -70,6 +73,8 @@ ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/ins
 #sudo apt-get install libfl2  # Ubuntu only (ignore if gives error)
 #sudo apt-get install libfl-dev  # Ubuntu only (ignore if gives error)
 #sudo apt-get install zlibc zlib1g zlib1g-dev  # Ubuntu only (ignore if gives error)
+
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd .. # verilator'u spike-cosim repo'sunun altina clone'lamayalim, bir ust directory'ye gecelim.
   git clone https://github.com/verilator/verilator
@@ -83,8 +88,8 @@ ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/ins
 şunları `~/.bashrc`ye (ubuntu için adı `~/.bashrc`, bir shell açıldığında `source`lanan script.) ekliyoruz:
 
 ```bash
-# git clone yaptigimizda nereye indirdiysek, mesela 
-# /home/usr1/verilator
+# git clone yaptigimizda nereye indirdiysek,
+#  mesela: /home/usr1/verilator
 export VERILATOR_ROOT=
 export PATH=$VERILATOR_ROOT/bin:$PATH
 ```
@@ -94,14 +99,15 @@ export PATH=$VERILATOR_ROOT/bin:$PATH
 ## Cosim Örnek Kullanımı
 `cosim/makefile` içindeki kurallar, cosim'i kullanan örnek testbench'i derlerken `SPIKE` environment variable'ının tanımlı olduğu varsayımı üzerine yazılmıştır. Bu variable'ı spike yerel kopyanızın bulunduğu directory'yi gösterecek şekilde mutlak yol olarak ayarlıyoruz:
 ```bash
-
-export SPIKE=/home/usr1/spike-cosim/riscv-isa-sim 
+# spike-cosim/riscv-isa-sim'in absolute path'i.
+export SPIKE=
 ```
 ### Baremetal örnek
 
 - cosim'i kullanan örnek testbench'i verilator ile derleyelim.
 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd cosim
   make clean_tb_spike_link
@@ -115,6 +121,7 @@ NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kern
 
 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd ornek_test_girdileri/pk_olmadan
   make all
@@ -122,6 +129,7 @@ NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kern
 ```
 - `tb_spike_link.exe`nin az önce oluşturduğumuz `elf` dosyasını kullanması için `args.txt` dosyasını değiştirelim. 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 echo "spike ${PWD}/ornek_test_girdileri/pk_olmadan/outputs/hello.elf" > cosim/log/args.txt
 ```
 `args.txt`, `cosimif.cc`deki `void init()` fonksiyonu tarafından okunuyor.
@@ -129,10 +137,10 @@ echo "spike ${PWD}/ornek_test_girdileri/pk_olmadan/outputs/hello.elf" > cosim/lo
 - `tb_spike_link`i koşalım:
 
 ```bash
-(
-  cd cosim
-  make run_with_compile_tb_spike_link
-)
+# PWD = spike-cosim oldugunu varsayarak
+cd cosim
+make run_with_compile_tb_spike_link
+cd ..
 ```
 ***
 ### proxy-kernel ile örnek
@@ -164,6 +172,7 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
 **NOT:** riscv-gnu-toolchain repo'sunu clone'lamak uzun sürecektir. repo yaklaşık 6GB.
 **NOT:** `/opt/riscv`ın içine kurulum yapılıyor.
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd .. # spike-cosim'in icine clone'lamayalim, bir ust directory'ye gecelim
   git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git
@@ -177,12 +186,14 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
 export RISCV=/opt/riscv
 export PATH=$RISCV/bin:$PATH
 ```
+  - bunları `~/.bashrc`ye ekledikten sonra terminali açıp kapatalım ki ortam değişkenlerinin yeni hâllerini tanısın.
 ***
 #### proxy-kernel kurulumu
 
 riscv proxy-kernel için:
 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd .. # spike-cosim'in icine clone'lamayalim, bir ust directory'ye gecelim
   git clone https://github.com/riscv-software-src/riscv-pk.git
@@ -191,13 +202,14 @@ riscv proxy-kernel için:
   cd build
   ../configure --prefix=/opt/riscv --host=riscv64-unknown-elf --with-arch=rv64imafdc_zifencei
   make -j8 # -j8'i degistirmek isteyebilirsiniz.
-  [sudo [-E]] make -j8 install # -E: sudo, user environment variable'larini korumama ihtimali oldugu icin
+  [sudo] make -j8 install # sudo -E: sudo, user environment variable'larini korumama ihtimali oldugu icin
 )
 ```
 ***
 
 - bunları yaptıktan sonra cosim'i proxy-kernel ile denemek için test girdimizi derleyelim
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 (
   cd ornek_test_girdileri/fromhost_tohost_test
   make all
@@ -207,15 +219,16 @@ riscv proxy-kernel için:
 - args.txt'yi az önce derlediğimiz .elf dosyasını pk ile kullanacak şekilde değiştirelim:
 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 echo "spike pk ${PWD}/ornek_test_girdileri/ornek_test_girdileri/fromhost_tohost_test/a.out" > cosim/log/args.txt
 ```
 
 - örnek testbench'i derleyip koşalım:
 
 ```bash
-(
-  cd cosim
-  make run_with_compile_tb_spike_link
-)
+# PWD = spike-cosim oldugunu varsayarak
+cd cosim
+make run_with_compile_tb_spike_link
+cd ..
 ```
 
