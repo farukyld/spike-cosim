@@ -199,7 +199,7 @@ riscv proxy-kernel için:
   cd build
   ../configure --prefix=/opt/riscv --host=riscv64-unknown-elf --with-arch=rv64imafdc_zifencei
   make -j8 # -j8'i degistirmek isteyebilirsiniz.
-  [sudo] make -j8 install # sudo -E: sudo, user environment variable'larini korumama ihtimali oldugu icin
+  [sudo] make -j8 install
 )
 ```
 ***
