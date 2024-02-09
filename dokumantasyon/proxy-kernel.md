@@ -6,7 +6,7 @@ proxy kernel, spike'ta koşan kodumuzda, spike'ta modellenen donanımların (`pr
 
 proxy kernel, riscv mimarisi için derlenir, çünkü spike core'u üzerinde çalışarak ve bizim kodlarımızın sistem çağrılarını host os'in sistem çağrılarına tercüme etmesi gerekmektedir. 
 
-O yüzden proxy-kernel riscv-gnu-toolchain kullanılarak derlenmektedir. Burada, ben kurulum yapmaya çalışırken [riscv-pk#260](https://github.com/riscv-software-src/riscv-pk/issues/260) da bahsedilen hatayı almıştım. 
+O yüzden proxy-kernel riscv-gnu-toolchain kullanılarak derlenmektedir. Burada, ben kurulum yapmaya çalışırken [riscv-pk#260](https://github.com/riscv-software-src/riscv-pk/issues/260)'da bahsedilen hatayı almıştım. 
 Anladığım kadarıyla problem, riscv-gnu-toolchain'in yeni versiyonlarında varsayılan olarak `zifencei` extension'u yok. Bu extension olmayınca `proxy-kernel`de assembly olarak yazılan kodların birinde geçen `fence.i` instruction'unun derleyemiyor. 
 
 Çözüm olarak:
