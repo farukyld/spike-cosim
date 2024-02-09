@@ -154,7 +154,7 @@ cd ..
 proxy-kernel'in kısa bir açıklaması için [proxy-kernel.md](dokumantasyon/proxy-kernel.md)'ye bakabilirsiniz.
 
 #### RISCV-GNU-Toolchain kurulumu
-proxy-kernel'i kurmak için önce [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i kurmamız gerek:
+proxy-kernel'i kurmak için önce [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i kurmamız gerek (çünkü pk, riscv mimarili bilgisayar üzerinde koşmak için derlenecek):
 
   - prerequisite'ler:
 ```bash
