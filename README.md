@@ -1,6 +1,6 @@
 # spike-cosim
 
-`cosim/src/cpp` directory'si içindeki kodlar, spike'a eklediğim fonksiyonları kullanarak genel amaçlı fonksiyonları tanımlıyorlar.
+`cosim/src/cpp` directory'si içindeki kodlar, spike'a yapılan eklemelerin büyük bir kısmını içeriyor. (bazı eklemeler doğrudan spike'ın kaynak kodlarının içinde olması gerekti) `cosimif.cc`de cosimulation için kullanılacak fonksiyonlar var.
 ```cpp
 // cosimif.cc'de tanimlaniyorlar
 void init();
@@ -14,7 +14,7 @@ void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* ins
 `cosim/src/pkg` içerisinde bu genel amaçlı fonksiyonlar SystemVerilog Direct Programming Interface (DPI) ile import'lanıyor. Bu fonksiyonların sv'de kullanımını kolaylaştırmak için çevreleyici fonksiyonlar, `enum`lar, `union`lar ve `struct`ları içeren sv `package`ları da burada.
 
 Cosim'i kullanmak için:
-- spike'ın cosim için değiştirilmiş hâlini kurmalıyız.
+- spike'ın cosim için değiştirilmiş hâlini [kurmalıyız](https://github.com/farukyld/spike-cosim?tab=readme-ov-file#spike-kurulumu).
 - DPI bağlantısını kuracak olan araca (verilator/questa/xcelium, ben verilator'u kullandım);
   - cpp kaynağı olarak:
     spike kurulumunun çıktısı olan `libriscv.so` ve `libspike_dasm.a` ile `cosim/src/cpp`de bulunan kaynak kodlarını, 
@@ -22,7 +22,7 @@ Cosim'i kullanmak için:
     `cosim/src/pkg`deki dosyaları ve bu sv `package`larını kullanan bir top modul'ü (`cosim/src/tb` içerisinde örnek bir testbench var) veriyoruz.
   - `include` search path olarak (gcc `-I` flag'i) bunları tanıtmamız gerekiyor:
 ```makefile
-  # spike-cosim/riscv-isa-sim'in absolute path'i.
+  # cosim için değiştirilmiş riscv-isa-sim'in absolute path'i.
   SPIKE := 
 
   INC_DIRS := -I$(SPIKE)/build
@@ -36,7 +36,7 @@ Cosim'i kullanmak için:
 ## Spike Kurulumu
 spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir zararı yok, spike'ın normal çalışmasını etkilemez fakat gereksiz yere install etmesini beklemiş oluruz.)
 
-(NOT: halihazırda derlemiş olduğunuz bir spike kurulumu varsa ve sıfırdan kurmakla zaman kaybetmek istemiyorsanız [kurulu_spike_uzerine.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/kurulu_spike_uzerine.md)'deki adımları takip edebilirsiniz. Fakat cosim'de kullanılan güncel spike versiyonuyla devam etmek için aşağıdaki adımları tavsiye ederiz.)
+(NOT: halihazırda derlemiş olduğunuz bir spike kurulumu varsa ve sıfırdan kurulmasını beklemek istemiyorsanız [kurulu_spike_uzerine.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/kurulu_spike_uzerine.md)'deki adımları takip edebilirsiniz. Fakat mevcut kurulumunuzu etkilememek için submodule'u kullanmanızı tavsiye ederiz.)
 
 ([esas repo](https://github.com/riscv-software-src/riscv-isa-sim#:~:text=major%20version%20number.-,Build%20Steps,-We%20assume%20that)'nun readme'sinden de yararlanabilirsiniz)
 
@@ -60,10 +60,14 @@ git submodule update --init riscv-isa-sim # riscv submodule'unu guncelle
 
 ***
 ## Verilator Kurulumu
+verilator verilog kodlarını cpp/SystemC'ye dönüştürürüp derleme ve linkleme işlemininde gcc kullanımını otomatize eden bir araç. Çıktı olarak systemC/cpp (verilator kodlarının dönüştürülmüş hâli), veya çalıştırılabilir dosya oluşturabiliyor. Çıktı olarak üretilen çalıştırılabilir dosyayı koştuğumuzda simülasyonu koşmuş oluyoruz. 
 
-verilator'u clone'layıp build'liyoruz. install yapmadım, direkt repo'nun yerel kopyasının içinde oluşturulan binary'leri (`VERILATOR_ROOT/bin`deki exexcutable'ları) kullandım. (run-in-place)
+**NOT:** Ben simülasyon akışını verilog içerisinde (testbench'lerle) oluşturdum. Verilator, ek seçenek olarak cpp kodu içerisindeki `main` fonksiyonunu değiştirerek simülasyon oluşturma imkanı da sağlıyor. [Şurada](https://www.youtube.com/watch?v=_VYv4MZmKR0) bununla ilgili bir örnek var.
 
-`systemC` kulanmadım.
+
+- verilator'u clone'layıp build'liyoruz. install yapmadım, doğrudan repo'nun yerel kopyasının içinde oluşturulan binary'leri (`VERILATOR_ROOT/bin`deki exexcutable'ları) kullandım. (run-in-place)
+
+-  `systemC` kulanmadım.
 
 ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/install.html)'a bakabilirsiniz.
 ```bash
@@ -85,7 +89,7 @@ ayrıntılı bilgi için [verilator docs](https://verilator.org/guide/latest/ins
 )
 ```
 
-şunları `~/.bashrc`ye (ubuntu için adı `~/.bashrc`, bir shell açıldığında `source`lanan script.) ekliyoruz:
+- şunları `~/.bashrc`ye (ubuntu için adı `~/.bashrc` farklı dağıtımlarda ismi farklı olabilir, bir shell açıldığında `source`lanan script.) ekliyoruz:
 
 ```bash
 # git clone yaptigimizda nereye indirdiysek,
@@ -117,7 +121,7 @@ export SPIKE=
 
 - `ornek_test_girdileri/pk_olmadan` örneğini kullanarak bir `elf` dosyası oluşturalım. Bu elf dosyasını oluştururken [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'in elf derleyicisini kullanacağız.
 
-NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kernel`i kurarken sıkıntı yaşamamak için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/proxy-kernel.md#:~:text=Burada%2C%20ben%20kurulum%20yapmaya%20%C3%A7al%C4%B1%C5%9F%C4%B1rken)'ye göz atmanızı tavsiye ederim. Riscv proxy-kernel kullanmayacaksanız (yalnızca bare-metal kod çalıştıracaksanız) bu NOT'u görmezden gelebilirsiniz. 
+**NOT:** Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kernel`i kurarken sıkıntı yaşamamak için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/proxy-kernel.md#:~:text=Burada%2C%20ben%20kurulum%20yapmaya%20%C3%A7al%C4%B1%C5%9F%C4%B1rken)'ye göz atmanızı tavsiye ederim. Riscv proxy-kernel kullanmayacaksanız (yalnızca bare-metal kod çalıştıracaksanız) bu NOT'u görmezden gelebilirsiniz. 
 
 
 ```bash
@@ -127,6 +131,8 @@ NOT: Eğer riscv-gnu-toolchain'i ilk defa kuracaksanız ilerde `riscv proxy-kern
   make all
 )
 ```
+
+
 - `tb_spike_link.exe`nin az önce oluşturduğumuz `elf` dosyasını kullanması için `args.txt` dosyasını değiştirelim. 
 ```bash
 # PWD = spike-cosim oldugunu varsayarak
@@ -145,31 +151,22 @@ cd ..
 ***
 ### proxy-kernel ile örnek
 
-proxy-kernel'in kısa bir açıklaması için [proxy-kernel.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/proxy-kernel.md)'ye bakabilirsiniz.
+proxy-kernel'in kısa bir açıklaması için [proxy-kernel.md](dokumantasyon/proxy-kernel.md)'ye bakabilirsiniz.
 
 #### RISCV-GNU-Toolchain kurulumu
-- proxy-kernel'i kurmak için önce [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i kurmamız gerek:
+proxy-kernel'i kurmak için önce [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i kurmamız gerek:
 
   - prerequisite'ler:
 ```bash
 sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev
 ```
 
-  NOT: burada hata alinirsa `sudo apt-get update`, yine hata alınırsa aşağıdaki sayfalara bakabilirsiniz: (burayı özetlemeliyim ~faruk)
+  NOT: burada hata alinirsa `sudo apt-get update` veya `apt-get` yerine `apt` ile deneyebilirsiniz. Yine hata alınırsa [ubuntu_paket_hatalari.md](dokumantasyon/ubuntu_paket_hatalari.md)'ye bakabilirsiniz.
 
-  - https://askubuntu.com/questions/378558/unable-to-locate-package-while-trying-to-install-packages-with-apt
-  
-  - https://help.ubuntu.com/community/AptGet/Offline/Repository
-  
-  - https://packages.ubuntu.com/focal/zlibc
-  
-  - https://packages.ubuntu.com/focal/
-  
-  - https://help.ubuntu.com/community/Repositories/CommandLine
+  - newlib kurulumu (alternatif olarak linux kurulumu da var ama hiç gerek duymadım)
 
-    - newlib kurulumu (alternatif olarak linux kurulumu da var ama hiç gerek duymadım)
+**NOT:** riscv-gnu-toolchain repo'sunu clone'lamak (git'in submodule.recurse configuration'ını true olarak ayarladıysanız.ayarlamadıysanız kurarken indirecek) uzun sürecektir. repo, submodule'lerle birlikte yaklaşık 6GB.
 
-**NOT:** riscv-gnu-toolchain repo'sunu clone'lamak uzun sürecektir. repo yaklaşık 6GB.
 **NOT:** `/opt/riscv`ın içine kurulum yapılıyor.
 ```bash
 # PWD = spike-cosim oldugunu varsayarak
@@ -181,7 +178,7 @@ sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip li
   [sudo] make -j8 # -j8'i degistirmek isteyebilirsiniz.
 )
 ```
-  - daha sonra şu satırları `~/.bashrc`ye ekleyebilirsiniz:
+  - daha sonra şu satırları `~/.bashrc`ye ekleyeyin:
 ```bash
 export RISCV=/opt/riscv
 export PATH=$RISCV/bin:$PATH

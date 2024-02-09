@@ -30,6 +30,7 @@ cp ${SPIKE}/fesvr/htif.h ${SPIKE_BACKUP}/fesvr/htif_${timestamp}.h
   **NOT:** bu yapacağımız işlem, ilgili yerlerde hâlihazırda aynı isimle mevcut dosyaların üzerine yazar.
 
 ```bash
+# PWD = spike-cosim oldugunu varsayarak
 git submodule update --init riscv-isa-sim # riscv-isa-sim sumbodule'unu guncelle
 
 # submodule'deki dosyalari hazir kurulumumuzun oldugu yere kopyaliyoruz.
