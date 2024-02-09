@@ -58,6 +58,11 @@ argv_argc_t *read_args_from_file(const char *filename)
     content);
     fclose(file);
     content[length] = '\0';
+    // only consider the first line of the file
+    char *newline = strchr(content, '\n');
+    if (newline)
+        *newline = '\0';
+    
 
     // Count arguments
     int argc = count_args(content);
