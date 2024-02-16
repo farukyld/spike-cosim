@@ -33,8 +33,8 @@ package cosim_pkg;
 
   // diger id'ler duz 0'dan 31'e.
   typedef union packed {
-    bit [REG_KEY_ID_W-1:0] int_float_vec_reg_id;
-    csr_id_e csr;
+    bit [REG_KEY_ID_W-1:0] xr_fr_vr_id;
+    csr_id_e csr_id;
   } reg_id_t;
 
 
@@ -49,8 +49,8 @@ package cosim_pkg;
 
 
   typedef union packed {
-    // 64 bit key {60 bit id, 4 bit type}
     reg_t key;
+    // 64 bit key {60 bit id, 4 bit type}
     key_parts_t key_parts;
   } reg_key_t;
 
@@ -99,6 +99,8 @@ package cosim_pkg;
       log_reg_write_o[ii].value = pack_4x32_to128le(log_reg_write_from_c[ii][2:5]);
     end
   endfunction
+
+  
 
   // son yapilan step'teki memory read islemleri
   function automatic void get_log_mem_read(
