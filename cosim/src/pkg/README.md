@@ -6,25 +6,24 @@ yüksek numaralılar düşük numaralıları kullanıyor. _ ile başlamayanlar _
 ***
 `cosim_constants_pkg`, kullandığımız repolar (spike, verilator) ve SystemVerilog DPI'a bağlı sabitler. Çok büyük ihtimalle hiç değişmeyecekler.
 ***
-`basic_types_pkg` paketinde `cosim_constants_pkg`de tanımlanan sabit bit genişliklerine göre 2-state türlere tanımlanıyor. yine bunlar da değişmeyecek. (ancak cosim'in sv arayüzünü değiştirmeye karar verirsek -yine çok küçük bir ihtimalle- değiştirmemiz gerekebilir) 
-***
 `csr_ids_pkg` spike'tan kopyalayarak oluşturduğum bir enum. kendi başına çok büyük olduğu için ayrı bir dosyaya aldım. normalde `cosim_pkg`de bulunacaktı. 
 ***
-`private_dpi_imports`da fonksiyonlar c tarafından verilerin alındığı fonksiyonların import'ları var. bunları testbench'te direkt kullanmayın. sebebi rapor'da açıklanacak. bunlardan alınan veri `cosim_pkg`de SystemVerilog struct'larına uygun şekilde dönüştürülüyor.
+`private_dpi_imports`da spike tarafından verilerin alındığı fonksiyonların import'ları var. bunları testbench'te direkt kullanmayın. sebebi rapor'da açıklanacak. bunlardan alınan veri `cosim_pkg`de SystemVerilog struct'larına uygun şekilde dönüştürülüyor.
+
+***
+
+`cosim_pkg`, normal şartlar altında testbench'lerimizde kullanacağımız her şeyi içeriyor olmalı. eğer içermiyorsa benim tasarımımda bir sıkıntı vardır muhtemelen. 
+
 
 bu package içinde `CommitLogEntries` diye bir sabit var, tek instruction'da spike, mem-read/mem-write/reg-write işlemlerinin her birinden en fazla kaç tane yapabilir.
 
 mesela: bir instruction tek seferde 6 tane register'a yazıyorsa `CommitLogEntries` >= 6 olmalı. 
 
-mesela: `huge` diye uydurma bir instruction var diyelim.  tek seferde 10 tane register'a yazıyor, 6 tane word (64 bit) okuyor, 8 tane word yazıyorsa `CommitLogEntries` >= 10 olmalı. çünkü üç tür (reg_write, mem_read, mem_write) ayrı array'lerde tutuluyor.
+mesela: `huge` diye uydurma bir instruction var diyelim.  tek seferde 10 tane register'a yazıyor, 6 tane word (64 bit) okuyor, 8 tane word yazıyorsa `CommitLogEntries` >= 10 olmalı. çünkü üç tür işlem (reg_write, mem_read, mem_write) ayrı array'lerde tutuluyor.
 
 ben `CommitLogEntries` parametresini 16 koydum.  muhtemelen gereğinden fazla. ama fazla olmasının sorun olacağını zannetmiyorum çünkü verilator'un gerekli free'lemeleri yaptığını düşünüyorum. proxy-kernel'la yaptığım cosimulation'larda bile heap-overflow veya stack-overflow sorunu yaşamadım. eğer free, delete, dealloc vesaire yapılmıyor olsaydı sorun yaşamış olurdum. 
 
 
-
-***
-
-`cosim_pkg`, normal şartlar altında testbench'lerimizde kullanacağımız her şeyi içeriyor olmalı. eğer içermiyorsa benim tasarımımda bir sıkıntı vardır muhtemelen. 
 
 cosim'i oluşturmak için: 
 ```verilog

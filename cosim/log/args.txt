@@ -1,1 +1,1 @@
-spike /home/usr1/spike-cosim/ornek_test_girdileri/pk_olmadan/outputs/hello.elf
+spike pk /home/usr1/spike-cosim/ornek_test_girdileri/fromhost_tohost_test/a.out
