@@ -4,11 +4,16 @@ package cosim_pkg;
   import cosim_constants_pkg::*;
 
   /* cosim types/enums */
-  typedef basic_types_pkg::reg_t reg_t; // bunlari disariya gostermek istiyor muyum?
-  typedef basic_types_pkg::freg_t freg_t; // eger istemiyorsam sadece import yapmaliyim.
-  // typedef yapmamaliyim
+  
+  // float register type
+  typedef bit [FREG_W-1:0] freg_t;
 
-  import basic_types_pkg::dpi_word_t; // bunu disariya gostermek istemiyorum.
+  // mimarimizdeki word
+  typedef bit [XREG_W-1:0] reg_t;
+
+
+  import private_dpi_imports_pkg::dpi_word_t; // bunu disariya gostermek istemiyorum.
+                                              // o yuzden sadece import yapiyorum.
 
 
   // register key type enum
@@ -28,7 +33,7 @@ package cosim_pkg;
 
   // diger id'ler duz 0'dan 31'e.
   typedef union packed {
-    bit [REG_KEY_ID_W-1:0] int_float_vec;
+    bit [REG_KEY_ID_W-1:0] int_float_vec_reg_id;
     csr_id_e csr;
   } reg_id_t;
 
@@ -78,7 +83,7 @@ package cosim_pkg;
 
   // son simulation adiminda yapilan register write kayitlarini output parametresine yazar.
   // kac tane eleman eklendiyse sayisini inserted_elements_o'ya yazar.
-  function void get_log_reg_write(
+  function automatic void get_log_reg_write(
     output commit_log_reg_item_t log_reg_write_o[CommitLogEntries],
     output int inserted_elements_o
   );
@@ -96,7 +101,7 @@ package cosim_pkg;
   endfunction
 
   // son yapilan step'teki memory read islemleri
-  function void get_log_mem_read(
+  function automatic void get_log_mem_read(
     output commit_log_mem_item_t log_mem_read_o[CommitLogEntries],
     output int inserted_elements_o
   );
@@ -117,7 +122,7 @@ package cosim_pkg;
   endfunction
 
   // son yapilan step'teki memory write islemleri.
-  function void get_log_mem_write(
+  function automatic void get_log_mem_write(
     output commit_log_mem_item_t log_mem_write_o[CommitLogEntries],
     output int inserted_elements_o
   );

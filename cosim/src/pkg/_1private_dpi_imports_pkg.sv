@@ -1,8 +1,10 @@
 package private_dpi_imports_pkg;
   
-  import basic_types_pkg::dpi_word_t;
   import cosim_constants_pkg::LOG_MEM_ITEM_DPI_WORDS;
   import cosim_constants_pkg::LOG_REG_WRITE_ITEM_DPI_WORDS;
+
+  import cosim_constants_pkg::DPI_W;
+  typedef bit [DPI_W-1:0]  dpi_word_t;
 
   import "DPI-C" function void private_get_log_reg_write(
     output dpi_word_t log_reg_write_o [][LOG_REG_WRITE_ITEM_DPI_WORDS],
