@@ -6,6 +6,7 @@
 void init();
 void step();
 svBit simulation_completed();
+void private_get_pc(svBitVecVal* pc_o, int processor_i);
 void private_get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, const int processor_i);
 void private_get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inserted_elements_o, const int processor_i);
 void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* inserted_elements_o, const int processor_i);

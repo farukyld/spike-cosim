@@ -4,11 +4,11 @@ package cosim_pkg;
   import cosim_constants_pkg::*;
 
   /* cosim types/enums */
-  
+
   // float register type
   typedef bit [FREG_W-1:0] freg_t;
 
-  // mimarimizdeki word
+  // mimarimizdeki register. pointer'lar icin de kullaniliyor.
   typedef bit [XREG_W-1:0] reg_t;
 
 
@@ -40,27 +40,16 @@ package cosim_pkg;
 
   typedef struct packed {
     reg_id_t reg_id;
-    reg_key_type_e reg_type; // low 4 bit.
-    // packed olunca low 4 bit. unpacked olursa verilog std. herhangi bir yerde olabilir der.
-    // unpacked, hafizada duzenli yayilmak zorunda degil.
-    // vverilator'de packed olunca low 4 bit. (olmasi gereken)
-    // unpacked olunca high 4 bit. (std tarafindan zorunlu tutulmuyor)
-  } key_parts_t;
-
-
-  typedef union packed {
-    reg_t key;
-    // 64 bit key {60 bit id, 4 bit type}
-    key_parts_t key_parts;
+    reg_key_type_e reg_type; // low 4 bit. packed oldugu icin.
   } reg_key_t;
 
 
   typedef struct packed {
-    reg_key_t key; // packed'in icinde unpacked koyamiyoruz, o reg_key_t union'u da packed.
+    reg_key_t key;
     freg_t value;
   } commit_log_reg_item_t;
 
-  
+
   typedef  struct packed {
     reg_t addr;
     reg_t wdata;
@@ -77,7 +66,7 @@ package cosim_pkg;
   // simulation'da kosan kod, exitcode gonderdiyse 1 dondurur.
   import "DPI-C" function bit simulation_completed();
 
-  // cosim'in bir parcasi degil, adim adim ilerletip incelemek icin koydum. 
+  // cosim'in bir parcasi degil, adim adim ilerletip incelemek icin koydum.
   // "testbench'imde kullaniyorum.devam etmek icin bir tusa basiniz" yapmaya yariyor.
   import "DPI-C" function void wait_key();
 
@@ -95,12 +84,12 @@ package cosim_pkg;
     private_dpi_imports_pkg::private_get_log_reg_write(log_reg_write_from_c, inserted_elements_o, 0);
 
     for (int ii = 0; ii < inserted_elements_o; ii = ii + 1) begin: log_reg_write_itr
-      log_reg_write_o[ii].key.key = pack_2x32_to64le(log_reg_write_from_c[ii][0:1]);
+      log_reg_write_o[ii].key = pack_2x32_to64le(log_reg_write_from_c[ii][0:1]);
       log_reg_write_o[ii].value = pack_4x32_to128le(log_reg_write_from_c[ii][2:5]);
     end
   endfunction
 
-  
+
 
   // son yapilan step'teki memory read islemleri
   function automatic void get_log_mem_read(
@@ -144,20 +133,23 @@ package cosim_pkg;
 
   endfunction
 
-  
+  function automatic void get_pc(output reg_t pc_o);
+    private_dpi_imports_pkg::private_get_pc(pc_o, 0);
+  endfunction
+
   // automatic -> defined variables are auto
   // default (static) -> defined variables are shared among
   // concurrent calls of that function. 13.4.2
 
 
-  function automatic logic [63:0] pack_2x32_to64le (
-    logic [31:0] parts[0:1]
+  function automatic bit [63:0] pack_2x32_to64le (
+    bit [31:0] parts[0:1]
   );
     pack_2x32_to64le = {parts[1], parts[0]};
   endfunction
 
-  function automatic logic [127:0] pack_4x32_to128le (
-    logic [31:0] parts[0:3]
+  function automatic bit [127:0] pack_4x32_to128le (
+    bit [31:0] parts[0:3]
   );
     pack_4x32_to128le = {parts[3], parts[2], parts[1], parts[0]};
   endfunction

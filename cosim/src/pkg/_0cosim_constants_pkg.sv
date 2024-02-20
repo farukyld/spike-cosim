@@ -22,4 +22,5 @@ package cosim_constants_pkg;
   // register'larin turunu belirleyen kisim (x,f,v,csr)
   parameter int unsigned REG_KEY_TYPE_W = 4; // riscv/decode_macros.h'den geliyor
 
+  parameter int unsigned XREG_DPI_WORDS = XREG_W/DPI_W;
 endpackage

@@ -24,20 +24,23 @@ module tb_spike_link;
 
       step();
 
+      get_pc(temp_key);
+      $display("tesbench, pc: %0d", temp_key);
+
       get_log_reg_write(log_reg_write_from_c,  num_elements_inserted_from_c_side);
 
       for (int ii = 0; ii < num_elements_inserted_from_c_side; ii = ii + 1) begin: log_reg_write_itr
 
-        if (log_reg_write_from_c[ii].key.key_parts.reg_type == CSR) begin
+        if (log_reg_write_from_c[ii].key.reg_type == CSR) begin
           $display("log_reg_write_from_c[%0d] csr name: %0s",
-          ii, log_reg_write_from_c[ii].key.key_parts.reg_id.csr_id.name);
+          ii, log_reg_write_from_c[ii].key.reg_id.csr_id.name);
         end else begin
           $display("log_reg_write_from_c[%0d] reg_id: %0d", 
-          ii, log_reg_write_from_c[ii].key.key_parts.reg_id);
+          ii, log_reg_write_from_c[ii].key.reg_id);
         end
 
         $display("log_reg_write_from_c[%0d].key.key_parts.reg_type: %0s", 
-        ii, log_reg_write_from_c[ii].key.key_parts.reg_type.name);
+        ii, log_reg_write_from_c[ii].key.reg_type.name);
 
 
         $display("log_reg_write_from_c[%0d].value: %0d", ii, log_reg_write_from_c[ii].value);

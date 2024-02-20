@@ -90,6 +90,12 @@ svBit simulation_completed()
   return ((htif_t*)simulation_object)->exitcode_not_zero();
 }
 
+void private_get_pc(svBitVecVal* pc_o, int processor_i)
+{
+  *((reg_t*)pc_o) = simulation_object->get_core(processor_i)->get_state()->pc;
+}
+
+
 void private_get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, const int processor_i)
 {
   auto map_from_c_side = simulation_object->get_core(processor_i)->get_state()->log_reg_write;
@@ -193,6 +199,8 @@ void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* ins
     num_entries++;
   }
 }
+
+
 
 void wait_key()
 {
