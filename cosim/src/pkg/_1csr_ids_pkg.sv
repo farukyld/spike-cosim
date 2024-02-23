@@ -1,7 +1,7 @@
 package csr_ids_pkg;
   // csr id enum
   import cosim_constants_pkg::REG_KEY_ID_W;
-  typedef enum bit [REG_KEY_ID_W-1:0] {
+  typedef enum bit unsigned [REG_KEY_ID_W-1:0] {
     // riscv/encoding.h
     CSR_FFLAGS         =  REG_KEY_ID_W'('h1),
     CSR_FRM            =  REG_KEY_ID_W'('h2),

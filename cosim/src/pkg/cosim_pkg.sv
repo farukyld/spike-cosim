@@ -6,14 +6,14 @@ package cosim_pkg;
   /* cosim types/enums */
 
   // float register type
-  typedef bit [FREG_W-1:0] freg_t;
+  typedef bit unsigned [FREG_W-1:0] freg_t;
 
   // mimarimizdeki register. pointer'lar icin de kullaniliyor.
-  typedef bit [XREG_W-1:0] reg_t;
+  typedef bit unsigned [XREG_W-1:0] reg_t;
 
   // register key type enum
   // from riscv/decode_macros.h
-  typedef enum bit [REG_KEY_TYPE_W-1:0] {
+  typedef enum bit unsigned [REG_KEY_TYPE_W-1:0] {
     XREG      = REG_KEY_TYPE_W'('b0000),
     FREG      = REG_KEY_TYPE_W'('b0001),
     VREG      = REG_KEY_TYPE_W'('b0010),
@@ -28,7 +28,7 @@ package cosim_pkg;
 
   // diger id'ler duz 0'dan 31'e.
   typedef union packed {
-    bit [REG_KEY_ID_W-1:0] xr_fr_vr_id;
+    bit unsigned [REG_KEY_ID_W-1:0] xr_fr_vr_id;
     csr_id_e csr_id;
   } reg_id_t;
 
@@ -45,10 +45,11 @@ package cosim_pkg;
   } commit_log_reg_item_t;
 
 
-  typedef  struct packed {
+  typedef struct packed {
     reg_t addr;
     reg_t wdata;
-    byte  len;
+    bit [55:0] reserved; // c tarafindaki alignment'a uydurmak icin
+    byte unsigned len;
   } commit_log_mem_item_t;
 
   // spike simulation olusturur. command line argumanlarin hangi dosyadan okundugunu
