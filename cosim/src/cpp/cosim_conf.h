@@ -4,7 +4,5 @@
 #define DISABLE_INTERACTIVE_MODE
 #define FORCE_LOG_COMMITS
 #define USE_DUMP_DTS_FLAG
-// #define PUT_COMMITS_TO_OSTREAM // not implemented
-#define ENABLE_SIZE_ASSERTION
 
 #endif // SPIKE__COSIM_COMMON_CONF_H

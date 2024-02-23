@@ -16,21 +16,21 @@ extern "C" {
 
 
     // DPI IMPORTS
-    // DPI import at src/pkg/cosim_pkg.sv:61:32
-    extern void init();
-    // DPI import at src/pkg/_1private_dpi_imports_pkg.sv:16:32
-    extern void private_get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inserted_elements_o, int processor_i);
-    // DPI import at src/pkg/_1private_dpi_imports_pkg.sv:22:32
-    extern void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* inserted_elements_o, int processor_i);
-    // DPI import at src/pkg/_1private_dpi_imports_pkg.sv:10:32
-    extern void private_get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, int processor_i);
-    // DPI import at src/pkg/_1private_dpi_imports_pkg.sv:28:32
-    extern void private_get_pc(svBitVecVal* pc_o, int processor_i);
-    // DPI import at src/pkg/cosim_pkg.sv:67:31
-    extern svBit simulation_completed();
-    // DPI import at src/pkg/cosim_pkg.sv:64:32
-    extern void step();
+    // DPI import at src/pkg/cosim_pkg.sv:78:33
+    extern void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o, int processor_id);
+    // DPI import at src/pkg/cosim_pkg.sv:85:32
+    extern void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, int processor_id);
     // DPI import at src/pkg/cosim_pkg.sv:71:32
+    extern void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, int processor_id);
+    // DPI import at src/pkg/cosim_pkg.sv:91:32
+    extern void get_pc(svBitVecVal* pc_o, int processor_id);
+    // DPI import at src/pkg/cosim_pkg.sv:57:32
+    extern void init();
+    // DPI import at src/pkg/cosim_pkg.sv:63:31
+    extern svBit simulation_completed();
+    // DPI import at src/pkg/cosim_pkg.sv:60:32
+    extern void step();
+    // DPI import at src/pkg/cosim_pkg.sv:67:32
     extern void wait_key();
 
 #ifdef __cplusplus
