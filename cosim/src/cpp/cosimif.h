@@ -10,7 +10,7 @@
 #define UINT64T_W (sizeof(uint64_t)*8)
 #define UINT8T_W (sizeof(uint8_t)*8)
 
-// direkt sizeof(struct)/sizeof(svBitVecVal) yapinca 24 byte veriyor.
+// direkt sizeof(commit_log_mem_item_t)/sizeof(svBitVecVal) yapinca 24 byte veriyor.
 #define CMT_LOG_MEM_ITEM_DPI_WORDS (REGT_W/DPI_W + UINT64T_W/DPI_W + UINT8T_W/DPI_W + 1)
 
 
@@ -22,7 +22,7 @@ typedef struct {
 
 
 #define FREGT_W (sizeof(freg_t)*8)
-// oncekinde oyle yaptigim icin bunda da ayni sekilde yapiyorum.
+// oncekinde ayri ayri alanlari topladigim icin bunda da ayni sekilde yapiyorum.
 #define CMT_LOG_REG_ITEM_DPI_WORDS (REGT_W/DPI_W + FREGT_W/DPI_W)
 
 

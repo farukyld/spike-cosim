@@ -90,62 +90,36 @@ svBit simulation_completed()
   return ((htif_t*)simulation_object)->exitcode_not_zero();
 }
 
-void private_get_pc(svBitVecVal* pc_o, int processor_i)
+void get_pc(svBitVecVal* pc_o, int processor_i)
 {
   *((reg_t*)pc_o) = simulation_object->get_core(processor_i)->get_state()->pc;
 }
 
 
-void private_get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, const int processor_i)
+void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, const int processor_i)
 {
   auto map_from_c_side = simulation_object->get_core(processor_i)->get_state()->log_reg_write;
-
-#ifdef ENABLE_SIZE_ASSERTION
-#warning size assertion enabled. checking at each simulation step.
-  if (unlikely(CMT_LOG_REG_ITEM_DPI_WORDS != svSize(log_reg_write_o,2))){
-    std::cout << "sizeof(commit_log_reg_item_t)/sizeof(svBitVecVal) != svSize(log_reg_write_o,2)" << std::endl;
-    std::cout << "sizeof(commit_log_reg_item_t)/sizeof(svBitVecVal): " << sizeof(commit_log_reg_item_t)/sizeof(svBitVecVal) << std::endl;
-    std::cout << "svSize(log_reg_write_o,2): " << svSize(log_reg_write_o,2) << std::endl;
-    exit(1);
-  }
-#endif
+  typedef struct { freg_t val; uint64_t key; } swapped_commit_log_reg_item_t;
 
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
-  // log_reg_write_o'nun her bir elementi 192 bit. ilk 64 bit key, sonraki 128 bit value.
+  // log_reg_write_o'nun her bir elementi 192 bit. son? 64 bit key, ilk? 128 bit value.
+  // auto item_ptr = (commit_log_reg_item_t*) log_reg_write_o;
+  auto swapped_item_ptr = (swapped_commit_log_reg_item_t*) log_reg_write_o;
   for (auto x: map_from_c_side){
-    commit_log_reg_item_t kvp = {x.first, x.second};
-    commit_log_reg_item_t* kvp_ptr = &kvp;
-    svBitVecVal* part_ptr = (svBitVecVal*) kvp_ptr;
-    for (int i = 0; i < CMT_LOG_REG_ITEM_DPI_WORDS; i++, part_ptr++){
-      svPutBitArrElemVecVal(log_reg_write_o, part_ptr, num_entries, i);
-    }
+    // commit_log_reg_item_t kvp = {x.first, x.second};
+    swapped_commit_log_reg_item_t kvp_swapped = {x.second, x.first};
+    // commit_log_reg_item_t* kvp_ptr = &kvp;
+    swapped_commit_log_reg_item_t* kvp_swapped_ptr = &kvp_swapped;
+    memcpy(swapped_item_ptr, kvp_swapped_ptr, sizeof(commit_log_reg_item_t));
+    swapped_item_ptr++;
     num_entries++;
   }
 }
 
 
-void private_get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inserted_elements_o, const int processor_i){
+void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o, const int processor_i){
   auto mem_read_vector = simulation_object->get_core(processor_i)->get_state()->log_mem_read;
-  #ifdef ENABLE_SIZE_ASSERTION
-  #warning size assertion enabled. checking at each simulation step.
-  if (unlikely(CMT_LOG_MEM_ITEM_DPI_WORDS != svSize(log_mem_read_o,2))){
-    // print UINT64T_W/DPI_W
-    std::cout << "UINT64T_W/DPI_W: " << UINT64T_W/DPI_W << std::endl;
-    // print FREGT_W/DPI_W
-    std::cout << "FREGT_W/DPI_W: " << FREGT_W/DPI_W << std::endl;
-    // print UINT8T_W/DPI_W
-    std::cout << "UINT8T_W/DPI_W: " << UINT8T_W/DPI_W << std::endl;
-    // print CMT_LOG_MEM_ITEM_DPI_WORDS
-    std::cout << "CMT_LOG_MEM_ITEM_DPI_WORDS: " << CMT_LOG_MEM_ITEM_DPI_WORDS << std::endl;
-
-    std::cout << "svSize(log_mem_read_o,2): " << svSize(log_mem_read_o,2) << std::endl;
-    std::cout << "sizeof(unsigned char): " << sizeof(unsigned char) << std::endl;
-    std::cout << "sizeof(svBitVecVal): " << sizeof(svBitVecVal) << std::endl;
-
-    exit(1);
-  }
-  #endif
 
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
@@ -156,34 +130,15 @@ void private_get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inser
     commit_log_mem_item_t* awl_ptr = &addr_wdata_len_tuple;
     svBitVecVal* part_ptr = (svBitVecVal*) awl_ptr;
     for (int i = 0; i < CMT_LOG_MEM_ITEM_DPI_WORDS; i++, part_ptr++){
-      svPutBitArrElemVecVal(log_mem_read_o, part_ptr, num_entries, i);
+      // svPutBitArrElemVecVal(log_mem_read_o, part_ptr, num_entries, i);
     }
     num_entries++;
   }
 }
 
 
-void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* inserted_elements_o, const int processor_i){
+void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, const int processor_i){
   auto mem_write_vector = simulation_object->get_core(processor_i)->get_state()->log_mem_write;
-  #ifdef ENABLE_SIZE_ASSERTION
-  #warning size assertion enabled. checking at each simulation step.
-  if (unlikely(CMT_LOG_MEM_ITEM_DPI_WORDS != svSize(log_mem_write_o,2))){
-    // print UINT64T_W/DPI_W
-    std::cout << "UINT64T_W/DPI_W: " << UINT64T_W/DPI_W << std::endl;
-    // print FREGT_W/DPI_W
-    std::cout << "FREGT_W/DPI_W: " << FREGT_W/DPI_W << std::endl;
-    // print UINT8T_W/DPI_W
-    std::cout << "UINT8T_W/DPI_W: " << UINT8T_W/DPI_W << std::endl;
-    // print CMT_LOG_MEM_ITEM_DPI_WORDS
-    std::cout << "CMT_LOG_MEM_ITEM_DPI_WORDS: " << CMT_LOG_MEM_ITEM_DPI_WORDS << std::endl;
-
-    std::cout << "svSize(log_mem_write_o,2): " << svSize(log_mem_write_o,2) << std::endl;
-    std::cout << "sizeof(unsigned char): " << sizeof(unsigned char) << std::endl;
-    std::cout << "sizeof(svBitVecVal): " << sizeof(svBitVecVal) << std::endl;
-
-    exit(1);
-  }
-  #endif
 
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
@@ -194,13 +149,11 @@ void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* ins
     commit_log_mem_item_t* awl_ptr = &addr_wdata_len_tuple;
     svBitVecVal* part_ptr = (svBitVecVal*) awl_ptr;
     for (int i = 0; i < CMT_LOG_MEM_ITEM_DPI_WORDS; i++, part_ptr++){
-      svPutBitArrElemVecVal(log_mem_write_o, part_ptr, num_entries, i);
+      // svPutBitArrElemVecVal(log_mem_write_o, part_ptr, num_entries, i);
     }
     num_entries++;
   }
 }
-
-
 
 void wait_key()
 {

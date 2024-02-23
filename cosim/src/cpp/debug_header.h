@@ -11,6 +11,8 @@
 // instead of doing a runtime if, we do a compile time if
 // using preprocessor macros.
 
+#define PRINT_FILE_LINE std::cout << __FILE__ ":"<< __LINE__ << ":";
+
 #if DEBUG_LEVEL >= DEBUG_WARN
 #define DEBUG_PRINT_WARN(fmt, ...)                \
   do                                              \
