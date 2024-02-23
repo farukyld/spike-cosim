@@ -20,6 +20,7 @@ _start:
   # slli t0, t0, 32
   # li t1, 0x9abcdef0
   # or t0, t0, t1
+  # slli t0, t0, 64 # assembler message: improper shamt
   la sp, _stack_end
   li t1, 0x6000 
   csrrs x0, mstatus, t1

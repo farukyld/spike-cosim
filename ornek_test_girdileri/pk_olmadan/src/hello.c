@@ -19,7 +19,7 @@ long int modular_random()
 
     return state;
 }
- 
+volatile long long int number = 0x123456789abcdef0;
 void main()
 {
     // tohost = 2; // !!! tohost'a 1 yazince direkt programi bitiriyor.
@@ -32,6 +32,8 @@ void main()
 //   (*(void (*)())(&(a[261878])))(); // stack end
 //   (*(void (*)())(&(a[259857])))(); // bu da calisiyor, text'te bir yere denk geliyor
     int a[SIZE];
+    number = number << 64; // etkisiz. (shamt % 64)
+
     for (int ii = 0; ii < SIZE; ii++)
     {
         a[ii] = modular_random();
