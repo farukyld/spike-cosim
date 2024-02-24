@@ -41,6 +41,7 @@ all: $(EXE)
 
 # Compilation rule for .c files
 $(TEMPDIR)/%.o: $(SRCDIR)/%.c
+	mkdir -p $(TEMPDIR)
 	$(CC) $(CFLAGS) -o $@ $<
 
 # Assembly rule for .S files
@@ -48,6 +49,7 @@ $(TEMPDIR)/%.o: $(SRCDIR)/%.S
 	$(AS) $(ASFLAGS) -o $@ $<
 
 $(EXE): $(OBJS)
+	mkdir -p $(OUTDIR)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS)
 
 run: $(EXE)
