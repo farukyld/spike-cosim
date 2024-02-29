@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
@@ -30,4 +31,5 @@ int main(int argc, char **argv)
   fp = fopen(file_path, "w");
   fprintf(fp, "%d", a);
   fclose(fp);
+  exit(12);
 }

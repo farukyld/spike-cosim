@@ -31,7 +31,7 @@ READELF = riscv64-unknown-elf-readelf
 CFLAGS = -I$(INCDIR) -c -fPIC
 ASFLAGS =
 LDFLAGS = -T link.ld
-DUMPFLAGS = -D
+DUMPFLAGS = -D -t
 READFLAGS = -a
 
 # Targets
@@ -42,7 +42,7 @@ all: $(EXE)
 # Compilation rule for .c files
 $(TEMPDIR)/%.o: $(SRCDIR)/%.c
 	mkdir -p $(TEMPDIR)
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) -O1 $(CFLAGS) -o $@ $<
 
 # Assembly rule for .S files
 $(TEMPDIR)/%.o: $(SRCDIR)/%.S
