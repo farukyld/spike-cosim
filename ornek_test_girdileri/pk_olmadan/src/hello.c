@@ -8,10 +8,10 @@
 long int modular_random();
 
 
-volatile static long long unsigned int magic_mem[8];
+volatile static long long unsigned int magic_mem[8]; // ismi onemli degil.
 
 
-volatile static long long unsigned int* tohost __attribute__((used));// 
+volatile static long long unsigned int* tohost __attribute__((used));// bunlarin ismi onemli
 volatile static long long unsigned int* fromhost __attribute__((used));// 
 
 void baremetal_exit(long long unsigned int exit_code);
@@ -58,7 +58,7 @@ long int modular_random()
 void baremetal_exit(long long unsigned int exit_code){
 
   magic_mem[1] = exit_code;
-  magic_mem[0] = 93; // 93: exit
+  magic_mem[0] = 93; // 93: exit see riscv-isa-sim/fesvr/syscall.cc } syscall_t::syscall_t
   for (int i = 2; i < 8; i++)
   {
     magic_mem[i] = 0;
