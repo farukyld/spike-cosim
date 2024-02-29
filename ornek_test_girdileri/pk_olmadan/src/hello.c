@@ -38,6 +38,7 @@ void main()
     {
         a[ii] = modular_random();
     }
+    // number = 43 / 0; // ayni kod satiri burada yazinca patliyor.
     __asm(
         "nop\n"
         "nop\n");
