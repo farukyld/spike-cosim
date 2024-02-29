@@ -1,7 +1,7 @@
 #ifndef COSIMIF_H
 #define COSIMIF_H
 
-#include "../../obj_dir_tb_spike_link/tb_spike_link__Dpi.h"
+#include "../../obj_dir_cosim_ornek_kullanim/cosim_ornek_kullanim__Dpi.h"
 #include "decode.h"
 
 #ifndef UNPACKED_STRUCT_VERILOG

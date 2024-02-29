@@ -1,18 +1,13 @@
-
-module tb_spike_link;
+module cosim_ornek_kullanim;
   import cosim_pkg::*;
-
-
-  // freg_t verilog_side_data [reg_t];
 
   commit_log_reg_item_t log_reg_write_from_c [CommitLogEntries];
   commit_log_mem_item_t log_mem_read_from_c [CommitLogEntries];
   commit_log_mem_item_t log_mem_write_from_c [CommitLogEntries];
-  int num_elements_inserted_from_c_side;
-  // int num_elems_to_insert;
+  int num_elements_inserted_from_c_side; // 3'u icin de kullaniliyor.
   reg_t temp_key;
   freg_t temp_value;
-
+  reg_t temp_pc;
   initial begin: cosimulation
     init();
 
@@ -23,8 +18,8 @@ module tb_spike_link;
       end
 
 
-      get_pc(temp_key);
-      $display("pc: %0h", temp_key);
+      get_pc(temp_pc);
+      $display("pc before execution: %0h", temp_pc);
 
       step();
 
@@ -64,9 +59,9 @@ module tb_spike_link;
 
       wait_key();
 
-    end
+    end: simulation_loop
     $finish;
-  end
+  end: cosimulation
 
 endmodule
 

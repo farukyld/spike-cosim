@@ -5,8 +5,8 @@
 // Manually include this file where DPI .c import functions are declared to ensure
 // the C functions match the expectations of the DPI imports.
 
-#ifndef VERILATED_TB_SPIKE_LINK__DPI_H_
-#define VERILATED_TB_SPIKE_LINK__DPI_H_  // guard
+#ifndef VERILATED_COSIM_ORNEK_KULLANIM__DPI_H_
+#define VERILATED_COSIM_ORNEK_KULLANIM__DPI_H_  // guard
 
 #include "svdpi.h"
 
@@ -22,8 +22,8 @@ extern "C" {
     extern void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, int processor_id);
     // DPI import at src/pkg/cosim_pkg.sv:71:32
     extern void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, int processor_id);
-    // DPI import at src/pkg/cosim_pkg.sv:91:32
-    extern void get_pc(svBitVecVal* pc_o, int processor_id);
+    // DPI import at src/pkg/cosim_pkg.sv:91:35
+    extern long long get_pc(int processor_id);
     // DPI import at src/pkg/cosim_pkg.sv:57:32
     extern void init();
     // DPI import at src/pkg/cosim_pkg.sv:63:31
