@@ -6,8 +6,19 @@ _start:
   # stack pointer'i ayarla
   # main'i cagir
   nop
-  nop
-  nop
+  # li t0, -1
+  # csrrs x0, mhpmcounter3, t0 
+  # vl, vtype, hip, fcsr, vstart, vxrm, vcsr, seed
+  # illegal instruction
+  # csrr t0, vl
+  # csrr t0, vtype
+  # csrr t0, hip
+  # csrr t0, fcsr
+  # csrr t0, vstart
+  # csrr t0, vxrm
+  # csrr t0, vcsr
+  # csrr t0, seed
+
   # ofsett 15, value 1 (ebreakm). ofset 6 of width 3, value 1 (cause). ofset 0 of width 2, value 3 (prv). 
   # li t1, 0x8103
   # li t1, 0x8043
@@ -22,11 +33,11 @@ _start:
   # or t0, t0, t1
   # slli t0, t0, 64 # assembler message: improper shamt
   la sp, _stack_end
-  li t1, 0x6000 
+  li t1, 0x6000
   csrrs x0, mstatus, t1
+
   fsw f0, 4(sp)
   call main
 
 infinity_loop:
   j infinity_loop
-    
