@@ -22,8 +22,8 @@ extern "C" {
     extern void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, int processor_id);
     // DPI import at src/pkg/cosim_pkg.sv:71:32
     extern void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, int processor_id);
-    // DPI import at src/pkg/cosim_pkg.sv:91:35
-    extern long long get_pc(int processor_id);
+    // DPI import at src/pkg/cosim_pkg.sv:91:32
+    extern void get_pc(svBitVecVal* pc_o, int processor_id);
     // DPI import at src/pkg/cosim_pkg.sv:57:32
     extern void init();
     // DPI import at src/pkg/cosim_pkg.sv:63:31
