@@ -52,10 +52,7 @@ argv_argc_t *read_args_from_file(const char *filename)
         exit(1);
     }
     fread(content, 1, length, file);
-    // print the content that is read from the file
-    printf("\n--running cosim with arguments:--\n %s\n"
-    "------------------------------------------\n",
-    content);
+    
     fclose(file);
     content[length] = '\0';
     // only consider the first line of the file
@@ -63,6 +60,11 @@ argv_argc_t *read_args_from_file(const char *filename)
     if (newline)
         *newline = '\0';
     
+    // print the first line content
+    printf("\n--running cosim with arguments"
+    " (the first line of the file):--\n %s\n"
+    "------------------------------------------\n",
+    content);
 
     // Count arguments
     int argc = count_args(content);
