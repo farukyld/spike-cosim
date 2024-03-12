@@ -17,7 +17,6 @@ module cosim_ornek_kullanim;
         break;
       end
 
-
       get_pc(temp_pc);
       $display("pc before execution: %0h", temp_pc);
 
@@ -56,7 +55,6 @@ module cosim_ornek_kullanim;
         $display("log_mem_write_from_c[%0d].wdata: %0h", ii, log_mem_write_from_c[ii].wdata);
         $display("log_mem_write_from_c[%0d].len: %0h", ii, log_mem_write_from_c[ii].len);
       end
-
       wait_key();
 
     end: simulation_loop

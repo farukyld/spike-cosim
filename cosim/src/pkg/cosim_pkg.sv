@@ -12,7 +12,7 @@ package cosim_pkg;
   typedef bit unsigned [XREG_W-1:0] reg_t;
 
   // register key type enum
-  // from riscv/decode_macros.h
+  // riscv-isa-sim/riscv/decode_macros.h
   typedef enum bit unsigned [REG_KEY_TYPE_W-1:0] {
     XREG      = REG_KEY_TYPE_W'('b0000),
     FREG      = REG_KEY_TYPE_W'('b0001),
@@ -52,8 +52,11 @@ package cosim_pkg;
     byte unsigned len;
   } commit_log_mem_item_t;
 
-  // spike simulation olusturur. command line argumanlarin hangi dosyadan okundugunu
-  // cosim/src/cpp/cosimif.cc:init() fonksiyonunun tanimindan degistirebilirsiniz.
+  // args.txt dosyasindan okunan command line argumanlarla
+  // spike simulation olusturur. command line argumanlarin 
+  // hangi dosyadan okundugunu
+  // cosim/src/cpp/cosimif.cc }} init() 
+  // fonksiyonunun tanimindan degistirebilirsiniz.
   import "DPI-C" function void init();
 
   // spike simulation'u bir adim ilerletir.
@@ -63,7 +66,7 @@ package cosim_pkg;
   import "DPI-C" function bit simulation_completed();
 
   // cosim'in bir parcasi degil, adim adim ilerletip incelemek icin koydum.
-  // "testbench'imde kullaniyorum.devam etmek icin bir tusa basiniz" yapmaya yariyor.
+  // testbench'imde kullaniyorum. "devam etmek icin bir tusa basiniz" yapmaya yariyor.
   import "DPI-C" function void wait_key();
 
   // son simulation adiminda yapilan register write kayitlarini output parametresine yazar.
@@ -92,4 +95,5 @@ package cosim_pkg;
     output reg_t pc_o,
     input int processor_id = 0
   );
+
 endpackage
