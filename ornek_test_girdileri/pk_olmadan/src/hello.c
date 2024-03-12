@@ -56,12 +56,14 @@ long int modular_random()
 
 
 void baremetal_exit(long long int exit_code){
-
   magic_mem[1] = exit_code;
-  magic_mem[0] = 93; // 93: exit see riscv-isa-sim/fesvr/syscall.cc } syscall_t::syscall_t
+  magic_mem[0] = 93; // 93: exit 
+  // see riscv-isa-sim/fesvr/syscall.cc }}
+  // syscall_t::syscall_t
   for (int i = 2; i < 8; i++)
-  {
     magic_mem[i] = 0;
-  }
   tohost = magic_mem;
+  while (!fromhost);
+  fromhost = 0;
+  while (1);
 }
