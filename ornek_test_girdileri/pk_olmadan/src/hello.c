@@ -5,19 +5,20 @@
 
 #define SIZE 1000
 
-long int modular_random();
+long int modular_random() __attribute__((section(".text2")));
 
 
-volatile static long long int magic_mem[8]; // ismi onemli degil.
+volatile static long long int magic_mem[8] = {1,0,0,0,0,0,0,1}; // ismi onemli degil.
 
 
 volatile static long long int* tohost __attribute__((used));// bunlarin ismi onemli
 volatile static long long int* fromhost __attribute__((used));// 
 
-void baremetal_exit(long long int exit_code);
+void baremetal_exit(long long int exit_code) __attribute__((section(".text2")));
 
 // volatile long long int number = 0x123456789abcdef0;
-void main()
+void main() __attribute__((section(".text2")));
+void main() 
 {
 
 //   int a[261878];
@@ -62,7 +63,9 @@ void baremetal_exit(long long int exit_code){
   // syscall_t::syscall_t
   for (int i = 2; i < 8; i++)
     magic_mem[i] = 0;
+
   tohost = magic_mem;
+
   while (!fromhost);
   fromhost = 0;
   while (1);

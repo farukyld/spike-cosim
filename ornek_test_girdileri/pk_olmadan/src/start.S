@@ -1,7 +1,9 @@
 
+
 .global _start
 .type   _start, @function
 
+nop
 _start:
   # stack pointer'i ayarla
   # main'i cagir
@@ -39,5 +41,14 @@ _start:
   fsw f0, 4(sp)
   call main
 
+.align 4
+
 infinity_loop:
   j infinity_loop
+
+.section .data
+
+.align 14
+
+var:
+  .word 1234

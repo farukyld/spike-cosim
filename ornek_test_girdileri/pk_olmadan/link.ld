@@ -4,11 +4,10 @@ ENTRY(_start)
 SECTIONS
 {
   . = 0x80000000;
-  .text.init : { *(.text.init) }
   .text : { *(.text) }
+  .text2 : { *(.text2) }
   . = ALIGN(0x1000);
   .data : { *(.data) }
-  .data.string : { *(.data.string)}
   .bss : { *(.bss) }
   _end = .;
   . = ALIGN(0x1000);
