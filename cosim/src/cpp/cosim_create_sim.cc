@@ -418,10 +418,14 @@ sim_t *create_sim_with_args(int argc, char **argv)
   parser.help(&suggest_help);
   parser.option('h', "help", 0, [&](const char UNUSED *s)
                 { help(0); });
-#ifndef DISABLE_INTERACTIVE_MODE
   parser.option('d', 0, 0, [&](const char UNUSED *s)
-                { debug = true; });
+                { 
+#ifndef DISABLE_INTERACTIVE_MODE
+                  debug = true;
+#else
+                  fprintf(stderr, __FILE__ ":%d: interactive mode is disabled\n",__LINE__);
 #endif
+                });
   parser.option('g', 0, 0, [&](const char UNUSED *s)
                 { histogram = true; });
   parser.option('l', 0, 0, [&](const char UNUSED *s)
@@ -538,14 +542,17 @@ sim_t *create_sim_with_args(int argc, char **argv)
                 [&](const char *s)
                 { log_path = s; });
   FILE *cmd_file = NULL;
-#ifndef DISABLE_INTERACTIVE_MODE
   parser.option(0, "debug-cmd", 1, [&](const char *s)
                 {
+#ifndef DISABLE_INTERACTIVE_MODE
       if ((cmd_file = fopen(s, "r"))==NULL) {
         fprintf(stderr, "Unable to open command file '%s'\n", s);
         exit(-1);
-      } });
+      }
+#else
+      fprintf(stderr,__FILE__":%d: interactive mode is disabled\n",__LINE__);
 #endif
+      });
   parser.option(0, "blocksz", 1, [&](const char *s)
                 {
     blocksz = strtoull(s, 0, 0);
