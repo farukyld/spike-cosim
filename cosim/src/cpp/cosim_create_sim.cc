@@ -73,9 +73,7 @@ static void help(int exit_code = 1)
   fprintf(stderr, "  --extlib=<name>       Shared library to load\n");
   fprintf(stderr, "                        This flag can be used multiple times.\n");
   fprintf(stderr, "  --rbb-port=<port>     Listen on <port> for remote bitbang connection\n");
-#ifdef USE_DUMP_DTS_FLAG
   fprintf(stderr, "  --dump-dts            Print device tree string and exit\n");
-#endif
   fprintf(stderr, "  --dtb=<path>          Use specified device tree blob [default: auto-generate]\n");
   fprintf(stderr, "  --disable-dtb         Don't write the device tree blob into memory\n");
   fprintf(stderr, "  --kernel=<path>       Load kernel flat image into memory\n");
@@ -361,9 +359,7 @@ sim_t *create_sim_with_args(int argc, char **argv)
   bool histogram = false;
   bool log = false;
   bool UNUSED socket = false; // command line option -s
-#ifdef USE_DUMP_DTS_FLAG
   bool dump_dts = false;
-#endif
   bool dtb_enabled = true;
   const char *kernel = NULL;
   reg_t kernel_offset, kernel_size;
@@ -478,10 +474,8 @@ sim_t *create_sim_with_args(int argc, char **argv)
   parser.option(0, "device", 1, device_parser);
   parser.option(0, "extension", 1, [&](const char *s)
                 { extensions.push_back(find_extension(s)); });
-#ifdef USE_DUMP_DTS_FLAG
   parser.option(0, "dump-dts", 0, [&](const char UNUSED *s)
                 { dump_dts = true; });
-#endif
   parser.option(0, "disable-dtb", 0, [&](const char UNUSED *s)
                 { dtb_enabled = false; });
   parser.option(0, "dtb", 1, [&](const char *s)
@@ -664,14 +658,12 @@ sim_t *create_sim_with_args(int argc, char **argv)
     simulation_object->set_remote_bitbang(&(*remote_bitbang));
   }
 
-#ifdef USE_DUMP_DTS_FLAG
   if (dump_dts)
   {
     printf("%s", simulation_object->get_dts());
     // return 0;
     exit(0);
   }
-#endif
 
   if (ic && l2)
     ic->set_miss_handler(&*l2);
