@@ -349,7 +349,6 @@ static std::vector<size_t> parse_hartids(const char *s)
   return hartids;
 }
 
-cfg_t *cfg_ptr;
 
 sim_t *create_sim_with_args(int argc, char **argv)
 {
@@ -389,7 +388,7 @@ sim_t *create_sim_with_args(int argc, char **argv)
       .support_impebreak = true};
   cfg_arg_t<size_t> nprocs(1);
 
-  cfg_ptr = new cfg_t(/*default_initrd_bounds=*/std::make_pair((reg_t)0, (reg_t)0),
+  cfg_t *cfg_ptr = new cfg_t(/*default_initrd_bounds=*/std::make_pair((reg_t)0, (reg_t)0),
             /*default_bootargs=*/nullptr,
             /*default_isa=*/DEFAULT_ISA,
             /*default_priv=*/DEFAULT_PRIV,
