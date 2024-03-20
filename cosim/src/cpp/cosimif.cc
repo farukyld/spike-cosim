@@ -30,7 +30,7 @@ void init()
 
   printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, args_filepath);
 
-  argv_argc_t argc_argv = read_args_from_file(args_filepath);
+  argv_argc_t *argc_argv = read_args_from_file(args_filepath);
 
   simulation_object = create_sim_with_args(argc_argv->argc, argc_argv->argv);
 
