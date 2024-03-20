@@ -28,8 +28,6 @@ void init()
 
   const char *args_filepath = ARGS_FILE_PATH;
 
-  // route to the args.txt file from the current directory
-
   printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, args_filepath);
 
   auto argc_argv = read_args_from_file(args_filepath);
