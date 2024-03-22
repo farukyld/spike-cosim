@@ -1,13 +1,12 @@
 
 
-.global _start
-.type   _start, @function
+.global start
+.type   start, @function
 
 nop
-_start:
+start:
   # stack pointer'i ayarla
   # main'i cagir
-  nop
   # li t0, -1
   # csrrs x0, mhpmcounter3, t0 
   # vl, vtype, hip, fcsr, vstart, vxrm, vcsr, seed
@@ -37,8 +36,8 @@ _start:
   la sp, _stack_end
   li t1, 0x6000
   csrrs x0, mstatus, t1
-
-  fsw f0, 4(sp)
+  fcvt.s.w f0, t1
+  fsd f0, 8(sp)
   call main
 
 .align 4

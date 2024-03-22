@@ -1,9 +1,9 @@
 module cosim_ornek_kullanim;
   import cosim_pkg::*;
 
-  commit_log_reg_item_t log_reg_write_from_c [CommitLogEntries];
-  commit_log_mem_item_t log_mem_read_from_c [CommitLogEntries];
-  commit_log_mem_item_t log_mem_write_from_c [CommitLogEntries];
+  commit_log_reg_item_t log_reg_write_from_c[CommitLogEntries];
+  commit_log_mem_item_t log_mem_read_from_c[CommitLogEntries];
+  commit_log_mem_item_t log_mem_write_from_c[CommitLogEntries];
   int num_elements_inserted_from_c_side; // 3'u icin de kullaniliyor.
   reg_t temp_key;
   freg_t temp_value;
@@ -12,17 +12,18 @@ module cosim_ornek_kullanim;
     init();
 
     for (;;) begin: simulation_loop
-      if (simulation_completed()) begin // htif_t::exitcode != 0
+      get_pc(temp_pc);
+      $display("pc: %0h", temp_pc);
+      if (simulation_completed() || temp_pc == 64'h8000_001c) begin // htif_t::exitcode != 0
         $display("simulation completed");
         break;
       end
 
-      get_pc(temp_pc);
-      $display("pc before execution: %0h", temp_pc);
+
 
       step();
 
-      get_log_reg_write(log_reg_write_from_c,  num_elements_inserted_from_c_side);
+      get_log_reg_write(log_reg_write_from_c, num_elements_inserted_from_c_side);
 
       for (int ii = 0; ii < num_elements_inserted_from_c_side; ii = ii + 1) begin: log_reg_write_itr
 
