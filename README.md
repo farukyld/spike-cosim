@@ -1,4 +1,5 @@
 [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) bünyesinde geliştirilmiştir. Fikir ve kopya hakkı [TÜTEL](https://github.com/TUTEL-TUBITAK)'e aittir.
+
 Developed by [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK). intellectual and copy rights are reserved to [TÜTEL](https://github.com/TUTEL-TUBITAK).
 
 # spike-cosim
