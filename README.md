@@ -1,6 +1,6 @@
-[TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) bünyesinde geliştirilmiştir. Fikir ve kopya hakkı [TÜTEL](https://github.com/TUTEL-TUBITAK)'e aittir.
+[CC BY-SA](https://en.wikipedia.org/wiki/Creative_Commons_license#Types_of_licenses) lisansı altında [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) bünyesinde geliştirilmiştir. 
 
-Developed by [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK). intellectual and copy rights are reserved to [TÜTEL](https://github.com/TUTEL-TUBITAK).
+Developed by [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) under [CC BY-SA](https://en.wikipedia.org/wiki/Creative_Commons_license#Types_of_licenses). 
 
 # spike-cosim
 
