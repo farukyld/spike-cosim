@@ -16,10 +16,10 @@ module cosim_ornek_kullanim;
       $display("pc: %0h", temp_pc);
       if (simulation_completed() || temp_pc == 64'h8000_001c) begin // htif_t::exitcode != 0
         $display("simulation completed");
-        break;
+        $finish;
       end
 
-
+      #10; // simulation time ilerlemediginde $finish fonksiyonunu yitirmektedir.
 
       step();
 
@@ -56,10 +56,9 @@ module cosim_ornek_kullanim;
         $display("log_mem_write_from_c[%0d].wdata: %0h", ii, log_mem_write_from_c[ii].wdata);
         $display("log_mem_write_from_c[%0d].len: %0h", ii, log_mem_write_from_c[ii].len);
       end
-      wait_key();
+      // wait_key();
 
     end: simulation_loop
-    $finish;
   end: cosimulation
 
 endmodule

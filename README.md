@@ -1,3 +1,7 @@
+[CC BY-SA](https://en.wikipedia.org/wiki/Creative_Commons_license#Types_of_licenses) lisansı altında [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) bünyesinde geliştirilmiştir. 
+
+Developed by [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) under [CC BY-SA](https://en.wikipedia.org/wiki/Creative_Commons_license#Types_of_licenses). 
+
 # spike-cosim
 
 `cosim/src/cpp` directory'si içindeki kodlar, spike'a yapılan eklemelerin büyük bir kısmını içeriyor. (bazı eklemeler doğrudan spike'ın kaynak kodlarının içinde olması gerekti) `cosimif.cc`de cosimulation için kullanılacak fonksiyonlar var.
