@@ -38,6 +38,9 @@ start:
   csrrs x0, mstatus, t1
   fcvt.s.w f0, t1
   fsd f0, 8(sp)
+  # la t1, 0x100
+  # li t0, 0
+  # sw t0, 0(t1)
   call main
 
 .align 4
