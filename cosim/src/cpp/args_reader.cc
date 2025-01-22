@@ -30,60 +30,25 @@ static int count_args(const char *str)
     return count;
 }
 
-// Function to read arguments from a file
-argv_argc_t *read_args_from_file(const char *filename)
+// Function to read arguments from "arg1 arg2 arg3"
+argv_argc_t *split_args(char *combined_args)
 {
-    FILE *file = fopen(filename, "r");
-    if (!file)
-    {
-        fprintf(stderr, __FILE__ ":%d: couldn't open file %s\n",__LINE__, filename);
-        exit(1);
-    }
-    DEBUG_PRINT_WARN("filename = %s, file pointer = %p\n", filename, file);
-    // Read file content
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    char *content = (char *)malloc(length + 1);
-    if (!content)
-    {
-        fprintf(stderr, __FILE__ ":%d: couldn't allocate space for file content\n",__LINE__);
-        fclose(file);
-        exit(1);
-    }
-    fread(content, 1, length, file);
-    
-    fclose(file);
-    content[length] = '\0';
-    // only consider the first line of the file
-    char *newline = strchr(content, '\n');
-    if (newline)
-        *newline = '\0';
-    
-    // print the first line content
-    printf("\n--running cosim with arguments"
-    " (the first line of the file):--\n %s\n"
-    "------------------------------------------\n",
-    content);
-
     // Count arguments
-    int argc = count_args(content);
+    int argc = count_args(combined_args);
     DEBUG_PRINT_WARN("argc = %d\n", argc);
 
     char **argv = (char **)malloc(sizeof(char *) * argc);
     if (!argv)
     {
         fprintf(stderr, __FILE__ ":%d: couldn't allocate space for argv\n",__LINE__);
-        free(content);
         exit(1);
     }
 
     // Parse arguments
-    char *token = strtok(content, " ");
+    char *token = strtok(combined_args, " ");
     int i = 0;
     while (token)
     {
-        DEBUG_PRINT_WARN("token[%d] = %s\n",i, token);
         argv[i++] = strdup(token);
         token = strtok(NULL, " ");
     }
@@ -95,27 +60,11 @@ argv_argc_t *read_args_from_file(const char *filename)
         for (int j = 0; j < i; j++)
             free(argv[j]);
         free(argv);
-        free(content);
         fprintf(stderr, __FILE__ ":%d: couldn't allocate space for args\n",__LINE__);
         return NULL;
     }
     args->argc = argc;
     args->argv = argv;
 
-    // Free the original content as strdup made copies
-    free(content);
-
     return args;
-}
-
-
-std::string get_directory_path(const std::string& file_path) {
-    printf("file_path = %s\n", file_path.c_str());
-    size_t ind_last_dir_sep = file_path.find_last_of("/\\");
-    if (ind_last_dir_sep != std::string::npos) {
-        return file_path.substr(0, ind_last_dir_sep);
-    }
-    fprintf(stderr,__FILE__ ":%d: cannot extract the directory containing %s",__LINE__, file_path.c_str());
-    exit(1);
-    return "";
 }

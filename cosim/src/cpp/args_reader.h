@@ -14,7 +14,6 @@ typedef struct {
 } argv_argc_t;
 
 // Function prototype to read arguments from a file
-argv_argc_t *read_args_from_file(const char *filename);
-std::string get_directory_path(const std::string& file_path);
+argv_argc_t *split_args(const char *combined_args);
 
 #endif // ARGS_READER_H

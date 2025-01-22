@@ -1,12 +1,9 @@
 #include "cosimif.h"
 #include "common.h"
-#include "cosim_conf.h"
-#include "cosim_create_sim.h"
 #include "args_reader.h"
 #include "debug_header.h"
 
-
-sim_t *simulation_object;
+#include <sim.h>
 
 std::function<void()> step_callback;
 
@@ -18,38 +15,19 @@ std::queue<reg_t> fromhost_queue;
 // !!! fromhost_calback reg_t alan, void donduren bir std::function
 std::function<void(reg_t)> fromhost_callback;
 
-
+extern sim_t* s_ptr;
+extern int sub_main(int argc,char**argv,char**env,bool in_cosim);
 void init()
 {
-  #ifndef ARGS_FILE_PATH
-  #define ARGS_FILE_PATH "args.txt"
-  #warning ARGS_FILE_PATH is not defined. Using default value: "args.txt"
-  #endif
+  char* arguments_string = getenv("COSIM_ARGS");
+  argv_argc_t *argc_argv = split_args(arguments_string);
 
-  const char *args_filepath = ARGS_FILE_PATH;
+  sub_main(argc_argv->argc,argc_argv->argv,NULL,true);
 
-  printf(__FILE__ ":%d: reading args from file: %s\n", __LINE__, args_filepath);
+  // sim_t::set_debug'a gerek yok.
+  ((htif_t*)s_ptr)->set_expected_xlen(s_ptr->get_harts().at(0)->get_isa().get_max_xlen());
 
-  argv_argc_t *argc_argv = read_args_from_file(args_filepath);
-
-  simulation_object = create_sim_with_args(argc_argv->argc, argc_argv->argv);
-
-  #if DEBUG_LEVEL >= DEBUG_WARN
-  std::cout <<__FILE__ <<":" <<__LINE__<< " sim.cfg.startpc.hasval: " << simulation_object->get_cfg().start_pc.has_value() << std::endl;
-  std::cout << "simulation object created at: " << simulation_object << std::endl;
-  #endif
-  simulation_object->prerun();
-
-  #if DEBUG_LEVEL >= DEBUG_WARN
-  std::cout <<__FILE__ <<":" <<__LINE__<< " sim.cfg.startpc.hasval: " << simulation_object->get_cfg().start_pc.has_value() << std::endl;
-  #endif
-
-
-  ((htif_t*)simulation_object)->start();
-
-  #if DEBUG_LEVEL >= DEBUG_WARN
-  std::cout <<__FILE__ <<":" <<__LINE__<< " sim.cfg.startpc.hasval: " << simulation_object->get_cfg().start_pc.has_value() << std::endl;
-  #endif
+  ((htif_t*)s_ptr)->start();
 
 
   auto enq_func = [](std::queue<reg_t> *q, uint64_t x)
@@ -62,24 +40,20 @@ void init()
   // !!! yani fromhost_callback, fromhost_queue'ye
   // reg_t turunden bir seyler push'lamaya yariyor
 
-  if (((htif_t*)simulation_object)->communication_available())
+  if (((htif_t*)s_ptr)->communication_available())
   {
-    printf("communication_available() is true\n");
     // htif_t pointer'ine type-cast yapmaya gerek yoktu muhtemelen ama acik acik gostermek istedim
-    step_callback = std::bind(&htif_t::single_step_with_communication, (htif_t*)simulation_object, &fromhost_queue, fromhost_callback);
+    step_callback = std::bind(&htif_t::single_step_with_communication, (htif_t*)s_ptr, &fromhost_queue, fromhost_callback);
   }
   else
   {
     printf("communication_available() is false\n");
-    step_callback = std::bind(&htif_t::single_step_without_communication, (htif_t*)simulation_object);
+    step_callback = std::bind(&htif_t::single_step_without_communication, (htif_t*)s_ptr);
   }
 }
 
 void step()
 {
-  #if DEBUG_LEVEL >= DEBUG_WARN
-  std::cout << "cosimif.cc: step. callback address: " << &step_callback << std::endl;
-  #endif
   step_callback();
 }
 
