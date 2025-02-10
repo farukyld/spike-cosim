@@ -1,4 +1,4 @@
-// write a c header and source to read arguments from a file. 
+// write a c header and source to read arguments from a file.
 // it should return a pointer to a struct containing int argc and char** argv fields.
 // chatGPT:
 
@@ -8,12 +8,13 @@
 #include <string>
 
 // Structure to hold argc and argv
-typedef struct {
-    int argc;
-    char **argv;
+typedef struct
+{
+  int argc;
+  char **argv;
 } argv_argc_t;
 
 // Function prototype to read arguments from a file
-argv_argc_t *split_args(const char *combined_args);
+argv_argc_t *split_args(char *combined_args);
 
 #endif // ARGS_READER_H

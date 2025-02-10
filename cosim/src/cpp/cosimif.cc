@@ -5,6 +5,8 @@
 
 #include <sim.h>
 
+#define COSIM_ARGS "COSIM_ARGS"
+
 std::function<void()> step_callback;
 
 // !!! bu iki variable her ne kadar init'den baska bir yerde kullanilmiyor gibi gozukse de
@@ -16,13 +18,35 @@ std::queue<reg_t> fromhost_queue;
 std::function<void(reg_t)> fromhost_callback;
 
 extern sim_t* s_ptr;
-extern int sub_main(int argc,char**argv,char**env,bool in_cosim);
+extern int launch(int argc,char**argv,char**env,bool in_cosim);
 void init()
 {
-  char* arguments_string = getenv("COSIM_ARGS");
+  char* arguments_string = getenv(COSIM_ARGS);
+  if (arguments_string == NULL)
+  {
+    fprintf(stderr,"ortam degiskeni " COSIM_ARGS " tanimlanmamis.\n");
+    exit(1);
+  }
+  else
+  {
+    fprintf(stderr,"cosim argumanlari: %s\n", arguments_string);
+  }
+
   argv_argc_t *argc_argv = split_args(arguments_string);
 
-  sub_main(argc_argv->argc,argc_argv->argv,NULL,true);
+  argv_argc_t *spike_added_cosim_args = (argv_argc_t *) malloc(sizeof(argv_argc_t));
+  spike_added_cosim_args->argc=argc_argv->argc + 1;
+  spike_added_cosim_args->argv= (char**) malloc((argc_argv->argc + 1) * sizeof(char*));
+
+  spike_added_cosim_args->argv[0] = "spike";
+
+  for (size_t i = 0; i < argc_argv->argc; i++)
+  {
+    spike_added_cosim_args->argv[i+1]=argc_argv->argv[i];
+  }
+
+
+  launch(spike_added_cosim_args->argc,spike_added_cosim_args->argv,NULL,true);
 
   // sim_t::set_debug'a gerek yok.
   ((htif_t*)s_ptr)->set_expected_xlen(s_ptr->get_harts().at(0)->get_isa().get_max_xlen());
@@ -59,18 +83,18 @@ void step()
 
 svBit simulation_completed()
 {
-  return ((htif_t*)simulation_object)->exitcode_not_zero();
+  return ((htif_t*)s_ptr)->exitcode_not_zero();
 }
 
 void get_pc(svBitVecVal* pc_o, int processor_i)
 {
-  *((reg_t*)pc_o) = simulation_object->get_core(processor_i)->get_state()->pc;
+  *((reg_t*)pc_o) = s_ptr->get_core(processor_i)->get_state()->pc;
 }
 
 
 void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, const int processor_i)
 {
-  auto map_from_c_side = simulation_object->get_core(processor_i)->get_state()->log_reg_write;
+  auto map_from_c_side = s_ptr->get_core(processor_i)->get_state()->log_reg_write;
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
 
@@ -86,7 +110,7 @@ void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, c
 
 void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o, const int processor_i){
   
-  auto mem_read_vector = simulation_object->get_core(processor_i)->get_state()->log_mem_read;
+  auto mem_read_vector = s_ptr->get_core(processor_i)->get_state()->log_mem_read;
 
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
@@ -105,7 +129,7 @@ void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o, con
 
 
 void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, const int processor_i){
-  auto mem_write_vector = simulation_object->get_core(processor_i)->get_state()->log_mem_write;
+  auto mem_write_vector = s_ptr->get_core(processor_i)->get_state()->log_mem_write;
 
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
