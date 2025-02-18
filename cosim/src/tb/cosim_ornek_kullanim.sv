@@ -45,6 +45,7 @@ module cosim_ornek_kullanim;
 
       for (int ii = 0; ii < num_elements_inserted_from_c_side; ii = ii + 1) begin: log_mem_read_itr
         $display("log_mem_read_from_c[%0d].addr: %0h", ii, log_mem_read_from_c[ii].addr);
+        $display("log_mem_read_from_c[%0d].paddr: %0h", ii, log_mem_read_from_c[ii].paddr);
         $display("log_mem_read_from_c[%0d].wdata: %0h", ii, log_mem_read_from_c[ii].wdata);
         $display("log_mem_read_from_c[%0d].len: %0d", ii, log_mem_read_from_c[ii].len);
       end
@@ -53,6 +54,7 @@ module cosim_ornek_kullanim;
 
       for (int ii = 0; ii < num_elements_inserted_from_c_side; ii = ii + 1) begin: log_mem_write_itr
         $display("log_mem_write_from_c[%0d].addr: %0h", ii, log_mem_write_from_c[ii].addr);
+        $display("log_mem_write_from_c[%0d].paddr: %0h", ii, log_mem_write_from_c[ii].paddr);
         $display("log_mem_write_from_c[%0d].wdata: %0h", ii, log_mem_write_from_c[ii].wdata);
         $display("log_mem_write_from_c[%0d].len: %0h", ii, log_mem_write_from_c[ii].len);
       end
