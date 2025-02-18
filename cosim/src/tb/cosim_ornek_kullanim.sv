@@ -14,7 +14,7 @@ module cosim_ornek_kullanim;
     for (;;) begin: simulation_loop
       get_pc(temp_pc);
       $display("pc: %0h", temp_pc);
-      if (simulation_completed() || temp_pc == 64'h8000_001c) begin // htif_t::exitcode != 0
+      if (simulation_completed()) begin // htif_t::exitcode != 0
         $display("simulation completed");
         $finish;
       end
