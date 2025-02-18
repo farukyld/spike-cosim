@@ -97,7 +97,6 @@ void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o, c
   auto map_from_c_side = s_ptr->get_core(processor_i)->get_state()->log_reg_write;
   int& num_entries = *inserted_elements_o;
   num_entries = 0;
-
   auto item_ptr = (commit_log_reg_item_t*) log_reg_write_o;
   
   for (auto x: map_from_c_side){
@@ -120,8 +119,9 @@ void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o, con
 
   for (auto x: mem_read_vector){
     item_ptr[num_entries].addr = std::get<0>(x);
-    item_ptr[num_entries].wdata = std::get<1>(x);
-    item_ptr[num_entries].len = std::get<2>(x);
+    item_ptr[num_entries].paddr = std::get<1>(x);
+    item_ptr[num_entries].wdata = std::get<2>(x);
+    item_ptr[num_entries].len = std::get<3>(x);
     // item_ptr[num_entries].reserved = {0, 0, 0, 0, 0, 0, 0};
     num_entries++;
   }
@@ -137,8 +137,9 @@ void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o, c
   auto item_ptr = (commit_log_mem_item_t*) log_mem_write_o;
   for (auto x: mem_write_vector){
     item_ptr[num_entries].addr = std::get<0>(x);
-    item_ptr[num_entries].wdata = std::get<1>(x);
-    item_ptr[num_entries].len = std::get<2>(x);
+    item_ptr[num_entries].paddr = std::get<1>(x);
+    item_ptr[num_entries].wdata = std::get<2>(x);
+    item_ptr[num_entries].len = std::get<3>(x);
     num_entries++;
   }
 }

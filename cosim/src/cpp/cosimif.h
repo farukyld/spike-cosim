@@ -10,6 +10,7 @@ typedef struct {
   uint8_t len;
   uint8_t reserved[7];
   uint64_t wdata; 
+  reg_t paddr; 
   reg_t addr; 
 } commit_log_mem_item_t;
 
@@ -23,6 +24,7 @@ typedef struct {
 #else
 typedef struct {
   reg_t addr;
+  reg_t paddr;
   uint64_t wdata;
   uint8_t len;
 } commit_log_mem_item_t;

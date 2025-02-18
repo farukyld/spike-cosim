@@ -47,6 +47,7 @@ package cosim_pkg;
 
   typedef struct packed {
     reg_t addr;
+    reg_t paddr;
     reg_t wdata;
     bit [55:0] reserved; // c tarafindaki alignment'a uydurmak icin
     byte unsigned len;
