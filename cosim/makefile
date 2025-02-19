@@ -7,6 +7,7 @@ CPP_FILES := $(wildcard src/cpp/*.cc)
 LIBRARIES :=
 LIBRARIES += $(SPIKE)/build/libspike_dasm.a
 LIBRARIES += $(SPIKE)/build/libriscv.so
+LAUNCH_OBJ:= $(SPIKE)/build/launch.o
 
 INC_DIRS :=
 INC_DIRS := -I$(SPIKE)/build # sadece config.h icin. genel configuration, arch gibi.
@@ -16,14 +17,22 @@ INC_DIRS += -I$(SPIKE)/
 INC_DIRS += -I$(SPIKE)/softfloat
 INC_DIRS += -I$(SPIKE)/fdt
 
+
+$(LAUNCH_OBJ): $(SPIKE)/build/spike.o
+	objcopy --strip-symbol=main $< $@
+
+
 # Define compile and run rules for each module dynamically
 define TB_RULES
 
 clean_$(1):
 	@find obj_dir_$(1) -type f ! -name "$(1)__Dpi.h" -exec rm -f {} +
 
-compile_$(1):
-	verilator -O2 -CFLAGS "$(INC_DIRS)" --Mdir obj_dir_$(1) --binary +1800-2017ext+sv $(SRC_FILES) $(TB_DIR)/$(1).sv $(CPP_FILES) $(LIBRARIES) --top $(1) --prefix $(1)  -o $(1).exe
+compile_$(1): $(LAUNCH_OBJ)
+	verilator -O2 -CFLAGS "$(INC_DIRS)" --Mdir obj_dir_$(1) --binary \
+	+1800-2017ext+sv $(SRC_FILES) $(TB_DIR)/$(1).sv $(CPP_FILES)\
+	$(LAUNCH_OBJ) $(LIBRARIES)\
+	 --top $(1) --prefix $(1)  -o $(1).exe
 	@echo "--compilation done--"
 .PHONY: compile_$(1)
 
