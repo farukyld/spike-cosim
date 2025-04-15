@@ -83,7 +83,7 @@ void step()
 
 svBit simulation_completed()
 {
-  return ((htif_t*)s_ptr)->exitcode_not_zero();
+  return ((htif_t*)s_ptr)->exitcode_has_value();
 }
 
 void get_pc(svBitVecVal* pc_o, int processor_i)
