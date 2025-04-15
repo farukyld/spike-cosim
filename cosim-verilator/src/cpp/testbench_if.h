@@ -1,8 +1,8 @@
-#ifndef COSIMIF_H
-#define COSIMIF_H
+#ifndef TESTBENCH_IF_H
+#define TESTBENCH_IF_H
 
 #include "../../obj_dir_cosim_ornek_kullanim/cosim_ornek_kullanim__Dpi.h"
-#include "decode.h"
+#include "decode.h" // for freg_t and other inttypes
 
 #ifndef UNPACKED_STRUCT_VERILOG
 

@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "debug_header.h"
 #include <string>
 #include <cstring>
 
@@ -35,7 +34,6 @@ argv_argc_t *split_args(char *combined_args)
 {
     // Count arguments
     int argc = count_args(combined_args);
-    DEBUG_PRINT_WARN("argc = %d\n", argc);
 
     char **argv = (char **)malloc(sizeof(char *) * argc);
     if (!argv)

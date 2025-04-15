@@ -2,23 +2,27 @@ TB_DIR := src/tb
 TB_MODULES := $(notdir $(basename $(wildcard $(TB_DIR)/*.sv)))
 
 # Source and C++ files
+SPIKE_BUILD := build-main
+
 SRC_FILES := $(wildcard src/pkg/*.sv) $(wildcard src/rtl/*.sv)
-CPP_FILES := $(wildcard src/cpp/*.cc)
+CPP_VERLTR_FILES := $(wildcard ../../cosim-verilator/src/cpp/*.cc)
+CPP_COMMON_FILES := $(wildcard ../../cosim-common/*.cc)
 LIBRARIES :=
-LIBRARIES += $(SPIKE)/build/libspike_dasm.a
-LIBRARIES += $(SPIKE)/build/libriscv.so
-LAUNCH_OBJ:= $(SPIKE)/build/launch.o
+LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libspike_dasm.a
+LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libriscv.so
+LAUNCH_OBJ:= $(SPIKE)/$(SPIKE_BUILD)/launch.o
 
 INC_DIRS :=
-INC_DIRS := -I$(SPIKE)/build # sadece config.h icin. genel configuration, arch gibi.
+INC_DIRS := -I$(SPIKE)/$(SPIKE_BUILD) # sadece config.h icin. genel configuration, arch gibi.
 INC_DIRS += -I$(SPIKE)/riscv
 INC_DIRS += -I$(SPIKE)/fesvr
 INC_DIRS += -I$(SPIKE)/
 INC_DIRS += -I$(SPIKE)/softfloat
 INC_DIRS += -I$(SPIKE)/fdt
+# assuming makefile is under cosim-verilator directory which is in same directory with cosim-common
+INC_DIRS += -I../../cosim-common
 
-
-$(LAUNCH_OBJ): $(SPIKE)/build/spike.o
+$(LAUNCH_OBJ): $(SPIKE)/$(SPIKE_BUILD)/spike.o
 	objcopy --strip-symbol=main $< $@
 
 
@@ -30,7 +34,7 @@ clean_$(1):
 
 compile_$(1): $(LAUNCH_OBJ)
 	verilator -O2 -CFLAGS "$(INC_DIRS)" --Mdir obj_dir_$(1) --binary \
-	+1800-2017ext+sv $(SRC_FILES) $(TB_DIR)/$(1).sv $(CPP_FILES)\
+	+1800-2017ext+sv $(SRC_FILES) $(TB_DIR)/$(1).sv $(CPP_COMMON_FILES) $(CPP_VERLTR_FILES)\
 	$(LAUNCH_OBJ) $(LIBRARIES)\
 	 --top $(1) --prefix $(1)  -o $(1).exe
 	@echo "--compilation done--"
