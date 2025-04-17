@@ -1,2 +1,3 @@
 build/**
 !build/Makefile
+!build/search_end.py
