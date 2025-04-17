@@ -10,7 +10,7 @@
 // Structure to hold argc and argv
 typedef struct
 {
-  int argc;
+  size_t argc;
   char **argv;
 } argv_argc_t;
 
