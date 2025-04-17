@@ -2,11 +2,12 @@
 #include "common.h"
 #include "args_reader.h"
 
-
+extern int launch(int argc,char**argv,char**env,bool in_cosim);
 
 #define COSIM_ARGS "COSIM_ARGS"
 
-std::function<void()> step_callback;
+void (*step_callback)();
+
 
 // !!! bu iki variable her ne kadar init'den baska bir yerde kullanilmiyor gibi gozukse de
 // aslinda step_callback'e bind edildigi icin oralarda kullaniliyor.
@@ -16,7 +17,16 @@ std::queue<reg_t> fromhost_queue;
 // !!! fromhost_calback reg_t alan, void donduren bir std::function
 std::function<void(reg_t)> fromhost_callback;
 
-extern int launch(int argc,char**argv,char**env,bool in_cosim);
+void step_callback_with_comm(){
+  ((htif_t*)s_ptr)->single_step_with_communication(&fromhost_queue, fromhost_callback);
+}
+
+
+void step_callback_without_comm(){
+  ((htif_t*)s_ptr)->single_step_without_communication();
+}
+
+
 void init()
 {
   char* arguments_string = getenv(COSIM_ARGS);
@@ -65,12 +75,12 @@ void init()
   if (((htif_t*)s_ptr)->communication_available())
   {
     // htif_t pointer'ine type-cast yapmaya gerek yoktu muhtemelen ama acik acik gostermek istedim
-    step_callback = std::bind(&htif_t::single_step_with_communication, (htif_t*)s_ptr, &fromhost_queue, fromhost_callback);
+    step_callback = step_callback_with_comm;
   }
   else
   {
     printf("communication_available() is false\n");
-    step_callback = std::bind(&htif_t::single_step_without_communication, (htif_t*)s_ptr);
+    step_callback = step_callback_without_comm;
   }
 }
 
