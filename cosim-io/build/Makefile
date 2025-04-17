@@ -1,5 +1,5 @@
 # Paths
-SPIKE_BUILD :=$(SPIKE)/build-main
+SPIKE_BUILD :=$(SPIKE)/build-cosim-io
 BUILD :=.
 # Source files
 IOTEST_SRC := ../src/main.cc

@@ -2,7 +2,7 @@ TB_DIR := src/tb
 TB_MODULES := $(notdir $(basename $(wildcard $(TB_DIR)/*.sv)))
 
 # Source and C++ files
-SPIKE_BUILD := build-main
+SPIKE_BUILD := build-cosim-io
 
 SRC_FILES := $(wildcard src/pkg/*.sv) $(wildcard src/rtl/*.sv)
 CPP_VERLTR_FILES := $(wildcard ../../cosim-verilator/src/cpp/*.cc)
