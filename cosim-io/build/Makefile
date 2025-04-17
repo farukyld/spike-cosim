@@ -57,6 +57,22 @@ $(LAUNCH_OBJ): $(SPIKE_BUILD)/spike.o
 
 # Clean up
 clean:
-	rm -f $(OUT) $(OBJS) $(LAUNCH_OBJ)
+	rm -f $(OUT) $(COMMON_OBJ) $(IOTEST_OBJ)
 
 .PHONY: all clean
+
+INSTRUCTIONS ?= 266447791
+run_with_default_cosim_args:
+	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
+	$(BUILD)/$(OUT)
+
+run:
+	$(BUILD)/$(OUT)
+
+time_with_default_cosim_args:
+	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
+	echo $$COSIM_ARGS && \
+	bash -c "time $(BUILD)/$(OUT)"
+
+time:
+	bash -c "time $(BUILD)/$(OUT)"
