@@ -8,8 +8,10 @@ SENDER := sender
 RECVER := receiver
 
 # Source files
+ALL_SRC    := $(wildcard ../src/*.cc)
 IOTEST_SRC := $(patsubst %,../src/%.cc,$(SIMPLE) $(SENDER) $(RECVER))
 COMMON_SRC := $(wildcard ../../cosim-common/*.cc)
+OTHER_SRC  := $(filter-out $(IOTEST_SRC),$(ALL_SRC))
 
 # Libraries
 LIBRARIES := \
@@ -20,6 +22,7 @@ LIBRARIES := \
 LAUNCH_OBJ := $(SPIKE_BUILD)/launch.o
 IOTEST_OBJ := $(patsubst ../src/%.cc,$(BUILD)/%.o,$(IOTEST_SRC))
 COMMON_OBJ := $(patsubst ../../cosim-common/%.cc,$(BUILD)/%.o,$(COMMON_SRC))
+OTHER_OBJ  := $(patsubst ../src/%.cc,$(BUILD)/%.o,$(OTHER_SRC))
 
 # Include directories
 INC_DIRS := \
@@ -48,7 +51,7 @@ $(BUILD)/%.o: ../../cosim-common/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Build the output binary
-$(BUILD)/%: $(BUILD)/%.o $(COMMON_OBJ) $(LAUNCH_OBJ)
+$(BUILD)/%: $(BUILD)/%.o $(OTHER_OBJ) $(COMMON_OBJ) $(LAUNCH_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 

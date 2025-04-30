@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "cosimif.h"
+#include "commit_log_pack.h"
 
 #define DEST_IP "127.0.0.1"
 #define DEST_PORT 12345
@@ -46,11 +47,12 @@ int main()
     {
       // for (size_t i = 0; i < 100; i++)
       step(); // spike simulasyon step
-      reg_t pc = s_ptr->get_core(0)->get_state()->pc;
-      // s_ptr->get_core(0)->get_state()->log_reg_write;
-      // s_ptr->get_core(0)->get_state()->log_mem_write;
-      // Send the TCP message
-      if (send(sock_fd, &pc, sizeof(reg_t), 0) < 0)
+      const int MAX_COMMIT_LOG_LENGTH = 200;
+      uint8_t buffer[MAX_COMMIT_LOG_LENGTH];
+      auto state = s_ptr->get_core(0)->get_state();
+      size_t bytes_written = pack_commit_log_into_array(buffer, MAX_COMMIT_LOG_LENGTH, *state);
+
+      if (send(sock_fd, &buffer, bytes_written, 0) < 0)
       {
         perror("Send failed");
         close(sock_fd);
