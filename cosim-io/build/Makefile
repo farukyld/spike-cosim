@@ -77,3 +77,27 @@ time_with_default_cosim_args:
 
 time:
 	bash -c "time $(BUILD)/$(SIMPLE)"
+
+
+run_receiver_with_default_cosim_args:
+	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
+	$(BUILD)/$(RECVER)
+
+run_receiver:
+	$(BUILD)/$(RECVER)
+
+
+run_sender_with_default_cosim_args:
+	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
+	$(BUILD)/$(SENDER)
+
+run_sender:
+	$(BUILD)/$(SENDER)
+
+time_sender_with_default_cosim_args:
+	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
+	echo $$COSIM_ARGS && \
+	bash -c "time $(BUILD)/$(SENDER)"
+
+time_sender:
+	bash -c "time $(BUILD)/$(SENDER)"
