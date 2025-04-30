@@ -1,14 +1,15 @@
 # Paths
 SPIKE_BUILD :=$(SPIKE)/build-cosim-io
 BUILD :=.
+
+# Output binaries
+SIMPLE  := simple
+SENDER := sender
+RECVER := receiver
+
 # Source files
-IOTEST_SRC := ../src/main.cc
+IOTEST_SRC := $(patsubst %,../src/%.cc,$(SIMPLE) $(SENDER) $(RECVER))
 COMMON_SRC := $(wildcard ../../cosim-common/*.cc)
-
-# Output binary
-OUT := main
-
-
 
 # Libraries
 LIBRARIES := \
@@ -38,7 +39,7 @@ CXXFLAGS := -std=c++17 -Wall -Wextra $(INC_DIRS)
 LDFLAGS := $(LIBRARIES)
 
 # Default target
-all: $(OUT)
+all: $(SIMPLE) $(SENDER) $(RECVER)
 
 $(BUILD)/%.o: ../src/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -47,7 +48,7 @@ $(BUILD)/%.o: ../../cosim-common/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Build the output binary
-$(OUT): $(IOTEST_OBJ) $(COMMON_OBJ) $(LAUNCH_OBJ)
+$(BUILD)/%: $(BUILD)/%.o $(COMMON_OBJ) $(LAUNCH_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 
@@ -57,22 +58,22 @@ $(LAUNCH_OBJ): $(SPIKE_BUILD)/spike.o
 
 # Clean up
 clean:
-	rm -f $(OUT) $(COMMON_OBJ) $(IOTEST_OBJ)
+	rm -f $(BUILD)/$(SIMPLE) $(BUILD)/$(SENDER) $(BUILD)/$(RECVER) $(COMMON_OBJ) $(IOTEST_OBJ)
 
 .PHONY: all clean
 
 INSTRUCTIONS ?= 266447791
 run_with_default_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	$(BUILD)/$(OUT)
+	$(BUILD)/$(SIMPLE)
 
 run:
-	$(BUILD)/$(OUT)
+	$(BUILD)/$(SIMPLE)
 
 time_with_default_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
 	echo $$COSIM_ARGS && \
-	bash -c "time $(BUILD)/$(OUT)"
+	bash -c "time $(BUILD)/$(SIMPLE)"
 
 time:
-	bash -c "time $(BUILD)/$(OUT)"
+	bash -c "time $(BUILD)/$(SIMPLE)"
