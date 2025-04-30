@@ -70,10 +70,10 @@ int main()
       auto state = s_ptr->get_core(0)->get_state();
       size_t bytes_written = pack_commit_log_into_array(generated_buffer, MAX_COMMIT_LOG_LENGTH, *state);
 
-      // reading bytes_written bytes. 
-      // assuming other end of the simulation 
+      // reading bytes_written bytes.
+      // assuming other end of the simulation
       // writes equal number of bytes for the current step
-      // receive it and compare with the 
+      // receive it and compare with the
       int recv_status = recv(client_sock_fd, &received_buffer, bytes_written, 0);
       if (recv_status < 0)
       {
@@ -82,7 +82,7 @@ int main()
         close(server_sock_fd);
         return 1;
       }
-      if (memcmp(received_buffer,generated_buffer,bytes_written) != 0)
+      if (memcmp(received_buffer, generated_buffer, bytes_written) != 0)
       {
         // fprintf(stderr, "buffers dosern't match\n");
       }

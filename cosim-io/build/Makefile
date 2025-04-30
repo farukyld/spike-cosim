@@ -36,13 +36,19 @@ INC_DIRS := \
 
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra $(INC_DIRS)
+CXXFLAGS := -std=c++17 -Wall -Wextra -MMD -MP $(INC_DIRS)
 
 # Linker flags
 LDFLAGS := $(LIBRARIES)
 
 # Default target
 all: $(SIMPLE) $(SENDER) $(RECVER)
+
+
+# Automatically include dependency files
+DEPFILES := $(IOTEST_OBJ:.o=.d) $(COMMON_OBJ:.o=.d) $(OTHER_OBJ:.o=.d)
+-include $(DEPFILES)
+
 
 $(BUILD)/%.o: ../src/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -61,7 +67,8 @@ $(LAUNCH_OBJ): $(SPIKE_BUILD)/spike.o
 
 # Clean up
 clean:
-	rm -f $(BUILD)/$(SIMPLE) $(BUILD)/$(SENDER) $(BUILD)/$(RECVER) $(COMMON_OBJ) $(IOTEST_OBJ)
+	rm -f $(BUILD)/$(SIMPLE) $(BUILD)/$(SENDER) $(BUILD)/$(RECVER) \
+	$(COMMON_OBJ) $(IOTEST_OBJ) $(OTHER_OBJ) $(LAUNCH_OBJ) $(DEPFILES)
 
 .PHONY: all clean
 
@@ -76,10 +83,10 @@ run:
 time_with_default_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
 	echo $$COSIM_ARGS && \
-	bash -c "time $(BUILD)/$(SIMPLE)"
+	bash -c "time ($(BUILD)/$(SIMPLE) 2> >(cat >log_default_cosim_args.txt))"
 
 time:
-	bash -c "time $(BUILD)/$(SIMPLE)"
+	bash -c "time ($(BUILD)/$(SIMPLE) 2> >(cat >log.txt))"
 
 
 run_receiver_with_default_cosim_args:
