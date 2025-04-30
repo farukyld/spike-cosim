@@ -36,7 +36,7 @@ INC_DIRS := \
 
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -MMD -MP $(INC_DIRS)
+CXXFLAGS := -g -std=c++17 -Ofast -Wall -Wextra -MMD -MP $(INC_DIRS)
 
 # Linker flags
 LDFLAGS := $(LIBRARIES)
