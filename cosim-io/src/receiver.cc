@@ -63,7 +63,70 @@ int main()
   {
     if (!simulation_completed())
     {
+      // receive the header
+      uint8_t received_commit_log[HEADER_SIZE + ASSUMED_MAX_BODY_SIZE];
+      size_t received_header_byte_count = recv(client_sock_fd,
+                                               received_commit_log,
+                                               HEADER_SIZE,
+                                               0);
+      if (unlikely(received_header_byte_count != HEADER_SIZE))
+      { // bunu burada bu sekilde mi kontrol etmemiz gerekiyor?
+        perror("received header byte count is not equal to expected");
+        return 1;
+      }
+
+      // parse the header
+      reg_t pc;
+      uint16_t interupts_taken;
+      uint8_t body_size;
+      uint8_t priv;
+      uint8_t freg_count;
+      uint8_t xreg_count;
+      uint8_t csr_count;
+      uint8_t mem_count;
+      const uint8_t *body_ptr;
+      bool unpacking_success = unpack_commit_log_header(received_commit_log,
+                                                        received_header_byte_count,
+                                                        pc,
+                                                        interupts_taken,
+                                                        body_size,
+                                                        priv,
+                                                        freg_count,
+                                                        xreg_count,
+                                                        csr_count,
+                                                        mem_count,
+                                                        body_ptr);
+      if (unlikely(!unpacking_success))
+      {
+        printf("unpacking unsuccessful\n");
+        return 1;
+      }
+
+      // receive the body
+      size_t received_body_size_count = recv(client_sock_fd,
+                                             received_commit_log + HEADER_SIZE,
+                                             body_size,
+                                             0);
+
+      // put the interupts taken into spike.
+      //
+      //
+      //
       step(); // spike simulasyon step
+      // take the commit logs from spike.
+
+      uint8_t generated_commit_log[ASSUMED_MAX_COMMIT_LOG_SIZE];
+      auto state = s_ptr->get_core(0)->get_state();
+      size_t generated_commit_log_length = pack_commit_log_into_array(generated_commit_log,
+                                                                      ASSUMED_MAX_COMMIT_LOG_SIZE,
+                                                                      *state);
+
+      // compare them
+      if (unlikely(memcmp(generated_commit_log, received_commit_log, generated_commit_log_length) != 0))
+      {
+        printf("logs do not match\n");
+        return 1;
+      }
     }
     else
     {
