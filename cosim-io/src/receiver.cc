@@ -11,6 +11,7 @@
 #define PORT 12345
 #define BACKLOG 1
 
+// receiver bilgisayar'da calisan spike'i temsil ediyor.
 int main()
 {
   init(); // spike simulasyon init
