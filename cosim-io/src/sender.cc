@@ -11,6 +11,7 @@
 #define DEST_PORT 12345
 #define BUF_SIZE 8
 
+// sender fpga'de calisan islemciyi temsil ediyor
 int main()
 {
   init(); // spike simulasyon init
