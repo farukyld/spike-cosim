@@ -47,10 +47,9 @@ int main()
     if (!simulation_completed())
     {
       step(); // spike simulasyon step
-      const int MAX_COMMIT_LOG_LENGTH = 200;
-      uint8_t buffer[MAX_COMMIT_LOG_LENGTH];
+      uint8_t buffer[ASSUMED_MAX_COMMIT_LOG_SIZE];
       auto state = s_ptr->get_core(0)->get_state();
-      size_t bytes_written = pack_commit_log_into_array(buffer, MAX_COMMIT_LOG_LENGTH, *state);
+      size_t bytes_written = pack_commit_log_into_array(buffer, ASSUMED_MAX_COMMIT_LOG_SIZE, *state);
 
       if (send(sock_fd, &buffer, bytes_written, 0) < 0)
       {
