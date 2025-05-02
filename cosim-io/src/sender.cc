@@ -46,7 +46,6 @@ int main()
   {
     if (!simulation_completed())
     {
-      // for (size_t i = 0; i < 100; i++)
       step(); // spike simulasyon step
       const int MAX_COMMIT_LOG_LENGTH = 200;
       uint8_t buffer[MAX_COMMIT_LOG_LENGTH];
