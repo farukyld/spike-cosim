@@ -107,7 +107,11 @@ int main()
                                              received_commit_log + HEADER_SIZE,
                                              body_size,
                                              0);
-
+      if (unlikely(received_body_size_count != body_size))
+      {
+        printf("received_body_size_count doesn't match expected body_size\n");
+        return 1;
+      }
       // put the interupts taken into spike.
       //
       //
