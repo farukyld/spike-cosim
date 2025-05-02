@@ -89,7 +89,12 @@ constexpr size_t ASSUMED_MAX_X_WRITES = 2;
 constexpr size_t ASSUMED_MAX_CSR_WRITES = 10;
 constexpr size_t ASSUMED_MAX_MEM_WRITES = 2;
 
-constexpr size_t ASSUMED_MAX_BODY_SIZE = 255;
+constexpr size_t ASSUMED_MAX_BODY_SIZE =
+  ASSUMED_MAX_F_WRITES * (SIZE_FREG_VALUE + SIZE_FREG_NO) +
+  ASSUMED_MAX_X_WRITES * (SIZE_XREG_VALUE + SIZE_XREG_NO) +
+  ASSUMED_MAX_CSR_WRITES * (SIZE_CSR_VALUE + SIZE_CSR_NO) +
+  ASSUMED_MAX_MEM_WRITES * (SIZE_MEM_TRIPLE + SIZE_MEM_LEN);
+
 
 size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, const state_t &state)
 {
@@ -153,7 +158,12 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   ptr += SIZE_INTERRUPTS;
 
   // calculate body size
-  size_t body_size = freg_count * (SIZE_FREG_VALUE + SIZE_FREG_NO) + xreg_count * (SIZE_XREG_VALUE + SIZE_XREG_NO) + csr_count * (SIZE_CSR_VALUE + SIZE_CSR_NO) + mem_count * (SIZE_MEM_TRIPLE + SIZE_MEM_LEN);
+  auto freg_part_size = freg_count * (SIZE_FREG_VALUE + SIZE_FREG_NO);
+  auto xreg_part_size = xreg_count * (SIZE_XREG_VALUE + SIZE_XREG_NO);
+  auto csr_part_size = csr_count * (SIZE_CSR_VALUE + SIZE_CSR_NO);
+  auto mem_part_size = mem_count * (SIZE_MEM_TRIPLE + SIZE_MEM_LEN);
+
+  size_t body_size = freg_part_size + xreg_part_size + csr_part_size + mem_part_size;
   if (unlikely(body_size > ASSUMED_MAX_BODY_SIZE || body_size + HEADER_SIZE > buffer_size))
   {
     return 0;
@@ -225,6 +235,7 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
 bool unpack_commit_log_header(const uint8_t *buffer, const size_t buffer_size,
                               reg_t &pc,
                               uint16_t &interrupts_taken,
+                              uint8_t &body_size,
                               uint8_t &priv,
                               uint8_t &freg_count,
                               uint8_t &xreg_count,
@@ -232,7 +243,11 @@ bool unpack_commit_log_header(const uint8_t *buffer, const size_t buffer_size,
                               uint8_t &mem_count,
                               const uint8_t *&body_ptr)
 {
-  if (buffer_size < HEADER_SIZE)
+  // TODO: buffer size'in burada sadece kontrol edilmek icin bulunmasi normal mi?
+  // cagiran kisi header size'i bilmesi gerekiyor mu?
+  // eger bilmesine izin veriyorsak ona gore davranmak zorunda oldugunu mu beklemeliyiz?
+  // sabit uzunluklu olmasigereken header'in adinin buffer olmasi normal mi?
+  if (unlikely(buffer_size < HEADER_SIZE))
     return false;
 
   const uint8_t *ptr = buffer;
@@ -243,9 +258,10 @@ bool unpack_commit_log_header(const uint8_t *buffer, const size_t buffer_size,
   interrupts_taken = *(const interupts_val_t *)ptr;
   ptr += SIZE_INTERRUPTS;
 
+  body_size = *(const body_size_t *)ptr;
   ptr += SIZE_BODY_SIZE; // skip body_size, not used directly here
 
-  priv = *(const uint8_t *)ptr;
+  priv = *(const priv_val_t *)ptr;
   ptr += SIZE_PRIV;
 
   freg_count = *(const fregs_count_t *)ptr;
@@ -307,7 +323,7 @@ bool unpack_commit_log_body(const uint8_t *body_ptr,
   for (size_t i = 0; i < xreg_count; i++)
   {
     reg_t id = (xreg_nos[i] << 4) | 0;
-    log_reg_write[id] = {{xreg_values[i],0}};
+    log_reg_write[id] = {{xreg_values[i], 0}};
   }
 
   for (size_t i = 0; i < freg_count; ++i)
@@ -319,7 +335,7 @@ bool unpack_commit_log_body(const uint8_t *body_ptr,
   for (size_t i = 0; i < csr_count; ++i)
   {
     reg_t id = (csr_nos[i] << 4) | 4;
-    log_reg_write[id] = {{csr_values[i],0}};
+    log_reg_write[id] = {{csr_values[i], 0}};
   }
 
   log_mem_write.clear();
