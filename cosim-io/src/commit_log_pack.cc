@@ -54,6 +54,7 @@ typedef uint8_t mem_writes_count_t;
 constexpr size_t SIZE_MEM_WRITES_COUNT = sizeof(mem_writes_count_t);
 
 constexpr size_t HEADER_SIZE = OFFSET_MEM_WRITES_COUNT + SIZE_MEM_WRITES_COUNT;
+const std::vector<size_t> HEADER_FORMAT = {8, 2, 1, 1, 1, 1, 1, 1};
 
 typedef freg_t freg_value_t;
 constexpr size_t SIZE_FREG_VALUE = sizeof(freg_value_t);
@@ -109,7 +110,7 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   csr_value_t csr_values[ASSUMED_MAX_CSR_WRITES];
   mem_triple_t mem_triples[ASSUMED_MAX_MEM_WRITES];
 
-  // Register ID arrays
+  // Register no arrays
   freg_no_t freg_nos[ASSUMED_MAX_F_WRITES];
   xreg_no_t xreg_nos[ASSUMED_MAX_X_WRITES];
   csr_no_t csr_nos[ASSUMED_MAX_CSR_WRITES];
@@ -230,7 +231,7 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     ptr += SIZE_MEM_LEN;
   }
 
-  return ptr - buffer;
+  return body_size + HEADER_SIZE;
 }
 
 bool unpack_commit_log_header(const uint8_t *buffer, const size_t buffer_size,

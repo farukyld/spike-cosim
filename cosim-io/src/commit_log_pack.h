@@ -7,6 +7,7 @@
 extern const size_t HEADER_SIZE;
 extern const size_t ASSUMED_MAX_BODY_SIZE;
 extern const size_t ASSUMED_MAX_COMMIT_LOG_SIZE;
+extern const std::vector<size_t> &HEADER_FORMAT;
 
 size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, const state_t &state);
 
@@ -30,4 +31,4 @@ bool unpack_commit_log_body(const uint8_t *body_ptr,
                             commit_log_reg_t &log_reg_write,
                             commit_log_mem_t &log_mem_write);
 
-#endif
+#endif // COMMIT_LOG_PACK_H

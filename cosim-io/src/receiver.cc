@@ -6,6 +6,7 @@
 
 #include "cosimif.h"
 #include "commit_log_pack.h"
+#include "print_helper.h"
 
 #define DEST_IP "127.0.0.1"
 #define PORT 12345
@@ -102,16 +103,23 @@ int main()
         return 1;
       }
 
+      printf("received header: \n");
+      print_sliced_hex(received_commit_log, received_header_byte_count, HEADER_FORMAT);
+
       // receive the body
-      size_t received_body_size_count = recv(client_sock_fd,
-                                             received_commit_log + HEADER_SIZE,
-                                             body_size,
-                                             0);
-      if (unlikely(received_body_size_count != body_size))
+      size_t received_body_size = recv(client_sock_fd,
+                                       received_commit_log + HEADER_SIZE,
+                                       body_size,
+                                       0);
+      if (unlikely(received_body_size != body_size))
       {
-        printf("received_body_size_count doesn't match expected body_size\n");
+        printf("received_body_size (%ld) doesn't match expected body_size (%d)\n", received_body_size, body_size);
         return 1;
       }
+      printf("received_body_size (%ld) - body_size (%d)\n", received_body_size, body_size);
+
+      printf("received body: \n");
+      print_sliced_hex(received_commit_log + HEADER_SIZE, body_size);
       // put the interupts taken into spike.
       //
       //
@@ -128,7 +136,9 @@ int main()
       // compare them
       if (unlikely(memcmp(generated_commit_log, received_commit_log, generated_commit_log_length) != 0))
       {
-        printf("logs do not match\n");
+        printf("logs do not match\n"
+               "generated_commit_log:\n");
+        print_sliced_hex(generated_commit_log, generated_commit_log_length, HEADER_FORMAT);
         return 1;
       }
     }

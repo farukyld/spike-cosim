@@ -75,10 +75,10 @@ clean:
 INSTRUCTIONS ?= 266447791
 run_with_default_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	$(BUILD)/$(SIMPLE)
+	bash -c "$(BUILD)/$(SIMPLE) 2> >(cat >log.txt)"
 
 run:
-	$(BUILD)/$(SIMPLE)
+	bash -c "$(BUILD)/$(SIMPLE) 2> >(cat >log.txt)"
 
 time_with_default_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \

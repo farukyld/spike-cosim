@@ -6,6 +6,7 @@
 
 #include "cosimif.h"
 #include "commit_log_pack.h"
+#include "print_helper.h"
 
 #define DEST_IP "127.0.0.1"
 #define DEST_PORT 12345
@@ -50,6 +51,10 @@ int main()
       uint8_t buffer[ASSUMED_MAX_COMMIT_LOG_SIZE];
       auto state = s_ptr->get_core(0)->get_state();
       size_t bytes_written = pack_commit_log_into_array(buffer, ASSUMED_MAX_COMMIT_LOG_SIZE, *state);
+
+      print_sliced_hex(buffer, bytes_written, HEADER_FORMAT);
+
+      printf("sender: bytes_written: %ld\n", bytes_written);
 
       if (send(sock_fd, &buffer, bytes_written, 0) < 0)
       {
