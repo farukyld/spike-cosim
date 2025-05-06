@@ -74,11 +74,11 @@ int main()
                                                                0);
       if (unlikely(received_header_byte_count != HEADER_SIZE))
       { // bunu burada bu sekilde mi kontrol etmemiz gerekiyor?
-        printf("received header byte count (%ld)"
+        fprintf(stderr,"received header byte count (%ld)"
                " is not equal to expected (%ld)\n",
                received_header_byte_count, HEADER_SIZE);
         close(server_sock_fd);
-        printf("progress: %ld steps\n", progress_steps);
+        fprintf(stderr,"progress: %ld steps\n", progress_steps);
         return 1;
       }
 
@@ -105,9 +105,9 @@ int main()
                                                         body_ptr);
       if (unlikely(!unpacking_success))
       {
-        printf("unpacking failed\n");
+        fprintf(stderr,"unpacking failed\n");
         close(server_sock_fd);
-        printf("progress: %ld steps\n", progress_steps);
+        fprintf(stderr,"progress: %ld steps\n", progress_steps);
         return 1;
       }
 
@@ -121,8 +121,8 @@ int main()
                                                        0);
       if (unlikely(received_body_size != body_size))
       {
-        printf("received_body_size (%ld) doesn't match body_size passed with header (%d)\n", received_body_size, body_size);
-        printf("progress: %ld steps\n", progress_steps);
+        fprintf(stderr,"received_body_size (%ld) doesn't match body_size passed with header (%d)\n", received_body_size, body_size);
+        fprintf(stderr,"progress: %ld steps\n", progress_steps);
         close(server_sock_fd);
         return 1;
       }
@@ -147,7 +147,7 @@ int main()
       // compare them
       if (unlikely(memcmp(generated_commit_log, received_commit_log, generated_commit_log_length) != 0))
       {
-        printf("logs do not match\n"
+        fprintf(stderr,"logs do not match\n"
                "generated_commit_log:\n");
         print_sliced_hex(generated_commit_log, generated_commit_log_length, HEADER_FORMAT);
         commit_log_reg_t log_reg_write;
@@ -163,7 +163,7 @@ int main()
 
         print_log(log_reg_write, log_mem_write);
 
-        printf("received_commit_log:\n");
+        fprintf(stderr,"received_commit_log:\n");
         print_sliced_hex(received_commit_log, HEADER_SIZE + received_body_size, HEADER_FORMAT);
         unpack_commit_log_body(received_commit_log + HEADER_SIZE,
                                generated_commit_log_length,
@@ -176,7 +176,7 @@ int main()
 
         print_log(log_reg_write, log_mem_write);
 
-        printf("progress: %ld steps\n", progress_steps);
+        fprintf(stderr,"progress: %ld steps\n", progress_steps);
 
         // close(server_sock_fd);
         // return 1;

@@ -14,8 +14,8 @@ char nibble_to_hex(uint8_t nibble)
 // Prints a byte as two hex digits (MSB first)
 void print_byte_hex(uint8_t byte)
 {
-    std::putchar(nibble_to_hex(byte >> 4));
-    std::putchar(nibble_to_hex(byte & 0x0F));
+    putc(nibble_to_hex(byte >> 4), stderr);
+    putc(nibble_to_hex(byte & 0x0F), stderr);
 }
 
 // Main function: prints buffer with optional slicing and delimiter
@@ -58,25 +58,25 @@ void print_sliced_hex(const uint8_t *data, size_t data_len,
         // Print delimiter if not the last slice
         if (index < data_len)
         {
-            std::putchar(delim);
+            putc(delim, stderr);
         }
     }
 
-    std::putchar('\n');
+    putc('\n', stderr);
 }
 
 void print_log(commit_log_reg_t log_reg_write, commit_log_mem_t log_mem_write)
 {
     if (log_reg_write.size() != 0)
-        printf(YELLOW "reg writes:\n" DEF_COLOR);
+        fprintf(stderr, YELLOW "reg writes:\n" DEF_COLOR);
     for (const auto &[reg_no, value] : log_reg_write)
     {
-        printf("%lX: %016lX_%016lX\n", reg_no, value.v[0], value.v[1]);
+        fprintf(stderr, "%lX: %016lX_%016lX\n", reg_no, value.v[0], value.v[1]);
     }
     if (log_mem_write.size() != 0)
-        printf(YELLOW "mem writes:\n" DEF_COLOR);
+        fprintf(stderr, YELLOW "mem writes:\n" DEF_COLOR);
     for (const auto &[vaddr, paddr, value, len] : log_mem_write)
     {
-        printf("%lX/%lX: %lX (%u)\n", vaddr, paddr, value, len);
+        fprintf(stderr, "%lX/%lX: %lX (%u)\n", vaddr, paddr, value, len);
     }
 }
