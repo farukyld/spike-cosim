@@ -147,8 +147,8 @@ int main()
       // compare them
       if (unlikely(memcmp(generated_commit_log, received_commit_log, generated_commit_log_length) != 0))
       {
-        fprintf(stderr,"logs do not match\n"
-               "generated_commit_log:\n");
+        fprintf(stderr, BRIGHT_RED "logs do not match\n"
+               "generated_commit_log:\n" DEF_COLOR);
         print_sliced_hex(generated_commit_log, generated_commit_log_length, HEADER_FORMAT);
         commit_log_reg_t log_reg_write;
         commit_log_mem_t log_mem_write;
