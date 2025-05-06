@@ -51,18 +51,20 @@ int main()
       uint8_t buffer[ASSUMED_MAX_COMMIT_LOG_SIZE];
       auto state = s_ptr->get_core(0)->get_state();
       size_t bytes_written = pack_commit_log_into_array(buffer, ASSUMED_MAX_COMMIT_LOG_SIZE, *state);
+      // auto commit_log_format_with_single_xreg = HEADER_FORMAT;
+      // commit_log_format_with_single_xreg.emplace_back(8);
+      // commit_log_format_with_single_xreg.emplace_back(1);
+      // print_sliced_hex(buffer, bytes_written, commit_log_format_with_single_xreg); 
 
-      print_sliced_hex(buffer, bytes_written, HEADER_FORMAT);
+      // printf("sender: bytes_written: %ld\n", bytes_written); // !!! burayi yorum yapip yapmadigima gore send'de garip seyler oluyor?
 
-      printf("sender: bytes_written: %ld\n", bytes_written);
-
-      if (send(sock_fd, &buffer, bytes_written, 0) < 0)
+      if (send(sock_fd, buffer, bytes_written, 0) < 0)
       {
         perror("Send failed");
         close(sock_fd);
         return 1;
       }
-    }
+    } 
     else
     {
       break;
