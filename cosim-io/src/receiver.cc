@@ -7,6 +7,7 @@
 #include "cosimif.h"
 #include "commit_log_pack.h"
 #include "print_helper.h"
+#include "socket_helper.h"
 
 #define DEST_IP "127.0.0.1"
 #define PORT 12345
@@ -67,10 +68,10 @@ int main()
     {
       // receive the header
       uint8_t received_commit_log[HEADER_SIZE + ASSUMED_MAX_BODY_SIZE];
-      size_t received_header_byte_count = recv(client_sock_fd,
-                                               received_commit_log,
-                                               HEADER_SIZE,
-                                               0);
+      size_t received_header_byte_count = recv_exactly_n_bytes(client_sock_fd,
+                                                               received_commit_log,
+                                                               HEADER_SIZE,
+                                                               0);
       if (unlikely(received_header_byte_count != HEADER_SIZE))
       { // bunu burada bu sekilde mi kontrol etmemiz gerekiyor?
         printf("received header byte count (%ld)"
@@ -114,10 +115,10 @@ int main()
       // print_sliced_hex(received_commit_log, received_header_byte_count, HEADER_FORMAT);
 
       // receive the body
-      size_t received_body_size = recv(client_sock_fd,
-                                       received_commit_log + HEADER_SIZE,
-                                       body_size,
-                                       0);
+      size_t received_body_size = recv_exactly_n_bytes(client_sock_fd,
+                                                       received_commit_log + HEADER_SIZE,
+                                                       body_size,
+                                                       0);
       if (unlikely(received_body_size != body_size))
       {
         printf("received_body_size (%ld) doesn't match body_size passed with header (%d)\n", received_body_size, body_size);
