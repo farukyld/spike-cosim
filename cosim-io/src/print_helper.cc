@@ -1,3 +1,5 @@
+#include "print_helper.h"
+
 #include <cstdint>
 #include <vector>
 #include <cstddef>
@@ -18,8 +20,8 @@ void print_byte_hex(uint8_t byte)
 
 // Main function: prints buffer with optional slicing and delimiter
 void print_sliced_hex(const uint8_t *data, size_t data_len,
-                      const std::vector<size_t> &slice_lengths = {},
-                      char delim = ':')
+                      const std::vector<size_t> &slice_lengths,
+                      char delim)
 {
     size_t index = 0;
     size_t slice_idx = 0;
@@ -61,4 +63,20 @@ void print_sliced_hex(const uint8_t *data, size_t data_len,
     }
 
     std::putchar('\n');
+}
+
+void print_log(commit_log_reg_t log_reg_write, commit_log_mem_t log_mem_write)
+{
+    if (log_reg_write.size() != 0)
+        printf(YELLOW "reg writes:\n" DEF_COLOR);
+    for (const auto &[reg_no, value] : log_reg_write)
+    {
+        printf("%lX: %016lX_%016lX\n", reg_no, value.v[0], value.v[1]);
+    }
+    if (log_mem_write.size() != 0)
+        printf(YELLOW "mem writes:\n" DEF_COLOR);
+    for (const auto &[vaddr, paddr, value, len] : log_mem_write)
+    {
+        printf("%lX/%lX: %lX (%u)\n", vaddr, paddr, value, len);
+    }
 }

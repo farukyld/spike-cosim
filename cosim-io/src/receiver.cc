@@ -150,11 +150,36 @@ int main()
         printf("logs do not match\n"
                "generated_commit_log:\n");
         print_sliced_hex(generated_commit_log, generated_commit_log_length, HEADER_FORMAT);
+        commit_log_reg_t log_reg_write;
+        commit_log_mem_t log_mem_write;
+        unpack_commit_log_body(generated_commit_log + HEADER_SIZE,
+                               generated_commit_log_length,
+                               freg_count,
+                               xreg_count,
+                               csr_count,
+                               mem_count,
+                               log_reg_write,
+                               log_mem_write);
+
+        print_log(log_reg_write, log_mem_write);
+
         printf("received_commit_log:\n");
         print_sliced_hex(received_commit_log, HEADER_SIZE + received_body_size, HEADER_FORMAT);
+        unpack_commit_log_body(received_commit_log + HEADER_SIZE,
+                               generated_commit_log_length,
+                               freg_count,
+                               xreg_count,
+                               csr_count,
+                               mem_count,
+                               log_reg_write,
+                               log_mem_write);
+
+        print_log(log_reg_write, log_mem_write);
+
         printf("progress: %ld steps\n", progress_steps);
-        close(server_sock_fd);
-        return 1;
+
+        // close(server_sock_fd);
+        // return 1;
       }
     }
     else
