@@ -173,6 +173,9 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   *(body_size_t *)ptr = (body_size_t)body_size;
   ptr += SIZE_BODY_SIZE;
 
+  *(priv_val_t *)ptr = (priv_val_t)state.last_inst_priv;
+  ptr += SIZE_PRIV;
+
   *(fregs_count_t *)ptr = (fregs_count_t)freg_count;
   ptr += SIZE_FREGS_COUNT;
   *(xregs_count_t *)ptr = (xregs_count_t)xreg_count;
