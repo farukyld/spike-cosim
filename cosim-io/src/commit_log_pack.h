@@ -7,7 +7,7 @@
 extern const size_t HEADER_SIZE;
 extern const size_t ASSUMED_MAX_BODY_SIZE;
 extern const size_t ASSUMED_MAX_COMMIT_LOG_SIZE;
-extern const std::vector<size_t> &HEADER_FORMAT;
+extern const std::vector<size_t> HEADER_FORMAT;
 
 size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, const state_t &state);
 
