@@ -73,41 +73,23 @@ clean:
 .PHONY: all clean
 
 INSTRUCTIONS ?= 266447791
-run_with_default_cosim_args:
+echo_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	bash -c "$(BUILD)/$(SIMPLE) 2> >(cat >log.txt)"
+	echo $$COSIM_ARGS
 
 run:
 	bash -c "$(BUILD)/$(SIMPLE) 2> >(cat >log.txt)"
-
-time_with_default_cosim_args:
-	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	echo $$COSIM_ARGS && \
-	bash -c "time ($(BUILD)/$(SIMPLE) 2> >(cat >log_default_cosim_args.txt))"
 
 time:
 	bash -c "time ($(BUILD)/$(SIMPLE) 2> >(cat >log.txt))"
 
 
-run_receiver_with_default_cosim_args:
-	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	$(BUILD)/$(RECVER)
-
 run_receiver:
 	$(BUILD)/$(RECVER)
 
 
-run_sender_with_default_cosim_args:
-	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	$(BUILD)/$(SENDER)
-
 run_sender:
 	$(BUILD)/$(SENDER)
-
-time_sender_with_default_cosim_args:
-	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
-	echo $$COSIM_ARGS && \
-	bash -c "time $(BUILD)/$(SENDER)"
 
 time_sender:
 	bash -c "time $(BUILD)/$(SENDER)"
