@@ -121,8 +121,6 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   mem_len_t mem_lens[ASSUMED_MAX_MEM_WRITES];
 
   // cozumleme asamasi
-  // if (debug_commit_log_pack)
-  //   printf(YELLOW "cozumleme\n" DEF_COLOR);
   // Count reg kinds, and accumulate values
   for (const auto &[regid, val] : state.log_reg_write)
   {
@@ -196,11 +194,11 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     ((csr_value_t *)ptr)[i] = csr_values[i];
   }
   ptr += SIZE_CSR_VALUE * csr_count;
-  
+
   for (size_t i = 0; i < freg_count; i++)
   {
     ((freg_value_t *)ptr)[i] = freg_values[i];
-  }  
+  }
   ptr += SIZE_FREG_VALUE * freg_count;
 
   for (size_t i = 0; i < xreg_count; i++)
@@ -208,7 +206,6 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     ((xreg_value_t *)ptr)[i] = xreg_values[i];
   }
   ptr += SIZE_XREG_VALUE * xreg_count;
-
 
   for (size_t i = 0; i < mem_count; i++)
   {
@@ -226,13 +223,13 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   for (size_t i = 0; i < freg_count; i++)
   {
     ((freg_no_t *)ptr)[i] = freg_nos[i];
-  }  
+  }
   ptr += SIZE_FREG_NO * freg_count;
 
   for (size_t i = 0; i < xreg_count; i++)
   {
     ((xreg_no_t *)ptr)[i] = xreg_nos[i];
-  }  
+  }
   ptr += SIZE_XREG_NO * xreg_count;
 
   for (size_t i = 0; i < mem_count; i++)

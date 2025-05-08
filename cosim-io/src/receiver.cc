@@ -66,7 +66,6 @@ int main()
   {
     if (!simulation_completed())
     {
-      if (progress_steps > 616777) debug_commit_log_pack = true;
       // receive the header
       uint8_t received_commit_log[HEADER_SIZE + ASSUMED_MAX_BODY_SIZE];
       size_t received_header_byte_count = recv_exactly_n_bytes(client_sock_fd,
