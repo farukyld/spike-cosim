@@ -152,6 +152,8 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     mem_triples[mem_count] = {.vaddr = vaddr, .paddr = paddr, .value = value};
     mem_lens[mem_count] = len;
     mem_count++;
+    if (debug_commit_log_pack) // bu satiri youm yapinca bir uyari vermiyor. satiri koda dahil edince buffer overflow'a dair uyari vreiyor derlerken
+      fprintf(stderr, "mem: %lX/%lX: %lX (%u)\n", vaddr, paddr, value, len);
   }
 
   // birlestirme asamasi
