@@ -3,13 +3,13 @@ SPIKE_BUILD :=$(SPIKE)/build-cosim-io
 BUILD :=.
 
 # Output binaries
-SIMPLE  := simple
+SIMPLE := simple
 SENDER := sender
 RECVER := receiver
-
+CNTREG := count_reg_writes
 # Source files
 ALL_SRC    := $(wildcard ../src/*.cc)
-IOTEST_SRC := $(patsubst %,../src/%.cc,$(SIMPLE) $(SENDER) $(RECVER))
+IOTEST_SRC := $(patsubst %,../src/%.cc,$(CNTREG) $(SIMPLE) $(SENDER) $(RECVER))
 COMMON_SRC := $(wildcard ../../cosim-common/*.cc)
 OTHER_SRC  := $(filter-out $(IOTEST_SRC),$(ALL_SRC))
 
@@ -42,7 +42,7 @@ CXXFLAGS := -g -std=c++17 -Ofast -Wall -Wextra -MMD -MP $(INC_DIRS)
 LDFLAGS := $(LIBRARIES)
 
 # Default target
-all: $(SIMPLE) $(SENDER) $(RECVER)
+all: $(SIMPLE) $(SENDER) $(RECVER) $(CNTREG)
 
 
 # Automatically include dependency files
@@ -77,7 +77,7 @@ echo_cosim_args:
 	export COSIM_ARGS="--instructions=$(INSTRUCTIONS) --log-commits $(SPIKE_TEST)" && \
 	echo $$COSIM_ARGS
 
-run:
+run_simple:
 	bash -c "$(BUILD)/$(SIMPLE) 2> >(cat >log.txt)"
 
 time:
@@ -87,6 +87,8 @@ time:
 run_receiver:
 	$(BUILD)/$(RECVER)
 
+run_count_reg_writes:
+	$(BUILD)/$(CNTREG)
 
 run_sender:
 	$(BUILD)/$(SENDER)
