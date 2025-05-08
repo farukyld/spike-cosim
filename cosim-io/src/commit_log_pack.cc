@@ -1,6 +1,8 @@
 #include "commit_log_pack.h"
 #include "cosimif.h"
 #include <cstring>
+#include "print_helper.h"
+bool debug_commit_log_pack;
 // Commit log header layout (aligned, future-aware):
 //   pc:           8 bytes
 //   intr_taken:   2 bytes
@@ -118,6 +120,9 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
   // Memory metadata
   mem_len_t mem_lens[ASSUMED_MAX_MEM_WRITES];
 
+  // cozumleme asamasi
+  // if (debug_commit_log_pack)
+  //   printf(YELLOW "cozumleme\n" DEF_COLOR);
   // Count reg kinds, and accumulate values
   for (const auto &[regid, val] : state.log_reg_write)
   {
@@ -138,6 +143,8 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     {
       csr_values[csr_count] = val.v[0];
       csr_nos[csr_count] = regid >> 4;
+      // if (debug_commit_log_pack)
+      //   printf("csr%X: %lX\n", csr_nos[csr_count], csr_values[csr_count]);
       csr_count++;
     }
   }
@@ -148,6 +155,8 @@ size_t pack_commit_log_into_array(uint8_t *buffer, const size_t buffer_size, con
     mem_lens[mem_count] = len;
     mem_count++;
   }
+
+  // birlestirme asamasi
 
   // Header
   if (unlikely(HEADER_SIZE > buffer_size))

@@ -66,6 +66,7 @@ int main()
   {
     if (!simulation_completed())
     {
+      if (progress_steps > 366828) debug_commit_log_pack = true;
       // receive the header
       uint8_t received_commit_log[HEADER_SIZE + ASSUMED_MAX_BODY_SIZE];
       size_t received_header_byte_count = recv_exactly_n_bytes(client_sock_fd,
@@ -176,10 +177,13 @@ int main()
 
         print_log(log_reg_write, log_mem_write);
 
+        printf(YELLOW "simulation logs (without packing/unpacking):\n" DEF_COLOR);
+        print_log(state->log_reg_write,state->log_mem_write);
+
         fprintf(stderr,"progress: %ld steps\n", progress_steps);
 
-        // close(server_sock_fd);
-        // return 1;
+        close(server_sock_fd);
+        return 1;
       }
     }
     else

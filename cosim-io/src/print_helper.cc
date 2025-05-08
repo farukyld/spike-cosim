@@ -81,7 +81,7 @@ void print_log(commit_log_reg_t log_reg_write, commit_log_mem_t log_mem_write)
 
         auto actual_regno = reg_no >> 4;
         
-        fprintf(stderr, "%lX: %016lX_%016lX\n", actual_regno, value.v[0], value.v[1]);
+        fprintf(stderr, "%lX: %016lX_%016lX\n", actual_regno, value.v[1], value.v[0]);
     }
     if (log_mem_write.size() != 0)
         fprintf(stderr, YELLOW "mem writes:\n" DEF_COLOR);

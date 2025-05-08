@@ -4,6 +4,8 @@
 #include "cosimif.h"
 #include <cstddef>
 
+extern bool debug_commit_log_pack;
+
 extern const size_t HEADER_SIZE;
 extern const size_t ASSUMED_MAX_BODY_SIZE;
 extern const size_t ASSUMED_MAX_COMMIT_LOG_SIZE;
