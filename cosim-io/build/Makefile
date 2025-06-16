@@ -1,5 +1,6 @@
 # Paths
-SPIKE_BUILD :=$(SPIKE)/build-cosim-io
+SPIKE_BUILD :=../../riscv-isa-sim/build-cosim-io
+# SPIKE_BUILD :=$(SPIKE)/build-cosim-io
 BUILD :=.
 
 # Output binaries
