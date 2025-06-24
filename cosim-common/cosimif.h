@@ -5,7 +5,7 @@
 
 extern sim_t* s_ptr;
 #ifdef VERILATOR
-#include "cosim_ornek_kullanim__Dpi.h"
+#include DPI_HEADER
 #else
 void init();
 void step();
