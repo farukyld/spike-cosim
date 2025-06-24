@@ -4,20 +4,77 @@ Developed by [TÜBİTAK BİLGEM - TÜTEL](https://github.com/TUTEL-TUBITAK) unde
 
 # spike-cosim
 
-`cosim/src/cpp` directory'si içindeki kodlar, spike'a yapılan eklemelerin büyük bir kısmını içeriyor. (bazı eklemeler doğrudan spike'ın kaynak kodlarının içinde olması gerekti) `cosimif.cc`de cosimulation için kullanılacak fonksiyonlar var.
+[Spike](https://github.com/riscv-software-src/riscv-isa-sim)'ın adım adım (instruction-by-instruction) çalıştırılarak co-simülasyon tarzı kullanıma elverişli hale getirmeyi amaçlar.
+
+İleride spike'ın hangi interruptları alacağına veya [lr/sc davranışına](https://github.com/farukyld/spike-cosim/issues/26) müdahale ederek spike'ı, doğrulamak istediğimiz işlemciyle daha uyumlu çalışmaya zorlayabilmeyi hedefliyoruz. 
+
+# Verilator ile Kullanım
+`cosim_ornek_kullanim.sv` dosyasında, `cosim_pkg.sv`'deki dpi fonksiyonlarını kullanarak spike simülasyonunu başlatma, ilerletme, bitirme sinyalini kontrol etme, spike simülasyonu tarafından yapılan register/bellek yazma/okuma işlemlerini almayla  ilgili basit bir örnek mevcut. 
+
+`cosim-verilator`'ün `Makefile`'ında verilator ile derleme komutu mevcut. Bu komut, spike build sistemi tarafından oluşturulmuş bazı `.o` (bkz. [launch.o](#launcho)), `.a`, `.so` dosyalarını, spike'ın `.h` dosyalarını, cosim'in dpi fonksiyonlarını tanımlayan `.cc` dosyalarını ve bunların spike ile etkileşimini sağlayan `.cc` dosyalarını kullanır.
+
+- spike submodülünü ve verilator'ü kurun. 
+
+- [riscv-gnu-toolchain](#riscv-gnu-toolchain-kurulumu) ile derlenmiş bir elf dosyasına sahip olmalısınız. Bu repo'da birkaç küçük örnek mevcut:!!!
+
+
+- daha sonra, COSIM_ARGS ortam değişkenini export'layın. Bu repo'daki örnek elf dosyalarını kullanarak şu şekilde devam edebilirsiniz:
+```shell
+export COSIM_ARGS="--instructions=500 hazir_ornekler/baremetal.elf"
+
+```
+ veya 
+```shell
+export COSIM_ARGS="--instructions=500 hazir_ornekler/pk hazir_ornekler/fhth_test.elf"
+```
+
+ veya 
+```shell
+export COSIM_ARGS="hazir_ornekler/fw_payload.elf"
+```
+> bkz: baremetal.elf
+> bkz: pk
+> bkz: fhth_test.elf
+> bkz: fw_payload.elf
+
+- ve  verilatör komutunuzu şu şekilde değiştirip çalıştırabilirsiniz.
+
+*** bu işlerin hepsini yapan interaktif bir shell scripti olacak:
+- spike submodule'unu kurar.
+- spike'ı build'ler:
+  - $RISCV değişkeni tanımlı mı diye bak,
+  - değilse, sırasıyla path'te spike, riscv64-unknown-elf-gcc, riscv64-unknown-linux-gnu-gcc, riscv64-linux-gnu-gcc bak, bunların kurulu olduğu bin dizininin parent'ı olarak tanımlıyorum diye sor. hayır derse nereye tanımlayacağını sor. 
+- verilator kurulu mu diye bakar
+- q1: verilator'ü şuaraya kuruyorum, başka bir yere kurmak istiyor musunuz diye sorar
+- verilator'ü dependency'leri ile birlikte kurar.
+- q2: bu repo'daki basit testbench ile çalıştırıyorum diye sorar.
+- q2-hayır denildiyse, verilator komutunu ister, değiştirilmiş verilator komutunu ve ek makefile satırlarını verir. (pkg dizinindeki .sv dosyalarını --top'tan önce koyar, -CFLAGS "-DVERILATOR $(INCDIR)diger cpp dosyaları, libraryler, vs.")
+- spike'a arguman olarak verilecek cosim argumanlarını şu şekilde export'lamalısınız diye örnek verir.
+- q2-evet denildiyse, fw_payload.elf (1, def), barematal.elf (2), pk fhth_test.elf (3) çalıştırıyorum diye sorar
+-  
+***
+
+# Geliştirici Rehberi
+`cosim-common/cosimif.cc`de hem verilator'e hem io tarzı cosim'e uyumlu şu fonksiyonlar tanımlı:
 ```cpp
 // cosimif.cc'de tanimlaniyorlar
 void init();
 void step();
 svBit simulation_completed();
-void private_get_pc(svBitVecVal* pc_o, int processor_i);
-void private_get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, const int processor_i);
-void private_get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inserted_elements_o, const int processor_i);
-void private_get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* inserted_elements_o, const int processor_i);
 ```
 
-`cosim/src/pkg` içerisinde bu genel amaçlı fonksiyonlar SystemVerilog Direct Programming Interface (DPI) ile import'lanıyor. Bu fonksiyonların sv'de kullanımını kolaylaştırmak için çevreleyici fonksiyonlar, `enum`lar, `union`lar ve `struct`ları içeren sv `package`ları da burada.
+`cosim-verilator/testbench_if.cc`'de, sadece verilator'ü ilgilendiren, şu fonksiyonlar tanımlı:
+```cpp
+void get_pc(svBitVecVal* pc_o, int processor_i);
+void get_log_reg_write(const svOpenArrayHandle log_reg_write_o, int* inserted_elements_o, const int processor_i);
+void get_log_mem_read(const svOpenArrayHandle log_mem_read_o, int* inserted_elements_o, const int processor_i);
+void get_log_mem_write(const svOpenArrayHandle log_mem_write_o, int* inserted_elements_o, const int processor_i);
+```
 
+`cosim-verilator/src/pkg` içerisinde bu genel amaçlı fonksiyonlar SystemVerilog Direct Programming Interface (DPI) ile import'lanıyor. Bu fonksiyonların sv'de kullanımını kolaylaştırmak için `enum`lar, `union`lar ve `struct`ları içeren sv `package`ları da burada.
+
+
+<!-- buradan aşağısı eski. -->
 Cosim'i kullanmak için:
 - spike'ın cosim için değiştirilmiş hâlini [kurmalıyız](https://github.com/farukyld/spike-cosim?tab=readme-ov-file#spike-kurulumu).
 - DPI bağlantısını kuracak olan araca (verilator/questa/xcelium, ben verilator'u kullandım);
@@ -39,10 +96,6 @@ Cosim'i kullanmak için:
 ```
 ***
 ## Spike Kurulumu
-spike submodule'ünü build'leyelim ama install etmeyelim. (install etmenin bir zararı yok, spike'ın normal çalışmasını etkilemez fakat gereksiz yere install etmesini beklemiş oluruz.)
-
-(NOT: halihazırda derlemiş olduğunuz bir spike kurulumu varsa ve sıfırdan kurulmasını beklemek istemiyorsanız [kurulu_spike_uzerine.md](https://github.com/farukyld/spike-cosim/blob/main/dokumantasyon/kurulu_spike_uzerine.md)'deki adımları takip edebilirsiniz. Fakat mevcut kurulumunuzu etkilememek için submodule'u kullanmanızı tavsiye ederiz.)
-
 ([esas repo](https://github.com/riscv-software-src/riscv-isa-sim#:~:text=major%20version%20number.-,Build%20Steps,-We%20assume%20that)'nun readme'sinden de yararlanabilirsiniz)
 
 - spike'ı kurmadan önce, [eğer riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)'i henüz kurmadıysanız, kuracağınız directory'yi `RISCV` ortam değişkeni olarak tanımlayın:
@@ -234,3 +287,7 @@ make run_with_compile_tb_spike_link
 cd ..
 ```
 
+# Dipnotlar
+
+#### launch.o
+spike.cc'de, orijinal repo'da `main` fonksiyonu tanımlıdır. `main`i `launch` olarak yeniden isimlendirdim. `launch`'un aynı zamanda fazladan `in_cosim` diye bir argümanı var. spike.cc'ye yeni bir main fonksiyonu tanımladım, bu fonksiyon launch'u in_cosim=false olarak çağırıyor. Böylece spike'ın normal build sistemiyle oluşturulmuş spike executable'ı, müstakil bir şekilde çalışabiliyor. Aynı zamanda spike.o'dan main fonksiyonunu kaldırınca (objcopy --strip-symbol=main spike.o launch.o) geriye kalan `.o` dosyası, cosim executable'ının içine derlenebiliyor. ve launch fonksiyonu, cosim tarafından in_cosim=true olarak çağrıldığında cosim'e uygun şekilde simülasyonu oluşturuyor.
