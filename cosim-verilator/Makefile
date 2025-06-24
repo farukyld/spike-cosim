@@ -6,9 +6,9 @@ SPIKE_BUILD := build
 
 SRC_FILES := $(wildcard src/pkg/*.sv) $(wildcard src/rtl/*.sv)
 CPP_VERLTR_FILES := $(wildcard src/cpp/*.cc)
-$(info "CPP_VERLTR_FILES $(CPP_VERLTR_FILES)")
+# $(info "CPP_VERLTR_FILES $(CPP_VERLTR_FILES)")
 CPP_COMMON_FILES := $(wildcard ../cosim-common/*.cc)
-$(info "CPP_COMMON_FILES $(CPP_COMMON_FILES)")
+# $(info "CPP_COMMON_FILES $(CPP_COMMON_FILES)")
 
 LIBRARIES :=
 LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libspike_dasm.a
