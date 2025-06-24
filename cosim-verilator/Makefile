@@ -12,7 +12,7 @@ CPP_COMMON_FILES := $(wildcard ../cosim-common/*.cc)
 
 LIBRARIES :=
 LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libspike_dasm.a
-LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libriscv.so
+# LIBRARIES += $(SPIKE)/$(SPIKE_BUILD)/libriscv.so
 LAUNCH_OBJ:= $(SPIKE)/$(SPIKE_BUILD)/launch.o
 
 INC_DIRS :=
@@ -39,7 +39,7 @@ clean_$(1):
 compile_$(1): $(LAUNCH_OBJ)
 	verilator -O2 -CFLAGS "-DDPI_HEADER=\\\"$(1)__Dpi.h\\\" -DVERILATOR $(INC_DIRS)" --Mdir obj_dir_$(1) --binary \
 	+1800-2017ext+sv $(SRC_FILES) $(TB_DIR)/$(1).sv $(CPP_COMMON_FILES) $(CPP_VERLTR_FILES)\
-	$(LAUNCH_OBJ) $(LIBRARIES)\
+	$(LAUNCH_OBJ) $(LIBRARIES) -LDFLAGS "-lriscv -L$(SPIKE)/$(SPIKE_BUILD) -Wl,-rpath=$(SPIKE)/$(SPIKE_BUILD)"\
 	 --top $(1) --prefix $(1)  -o $(1).exe
 	@echo "--compilation done--"
 .PHONY: compile_$(1)
