@@ -7,13 +7,16 @@ module cosim_ornek_kullanim;
   int num_elements_inserted_from_c_side; // 3'u icin de kullaniliyor.
   reg_t temp_key;
   freg_t temp_value;
-  reg_t temp_pc;
+  reg_t step_pc;
+  int unsigned step_priv;
+  int unsigned step_proc_id;
+
   initial begin: cosimulation
     init();
 
     for (;;) begin: simulation_loop
-      // get_pc(temp_pc);
-      // $display("pc: %0h", temp_pc);
+      // get_pc(step_pc);
+      // $display("pc: %0h", step_pc);
       if (simulation_completed()) begin // htif_t::exitcode != 0
         $display("simulation completed");
         $finish;
@@ -22,6 +25,11 @@ module cosim_ornek_kullanim;
       #10; // simulation time ilerlemediginde $finish fonksiyonunu yitirmektedir.
 
       step();
+
+      // get_priv(step_priv);
+      // get_proc_id(step_proc_id);
+      // $display("step_priv: %d", step_priv);
+      // $display("step_proc_id: %d", step_proc_id);
 
       // get_log_reg_write(log_reg_write_from_c, num_elements_inserted_from_c_side);
 
