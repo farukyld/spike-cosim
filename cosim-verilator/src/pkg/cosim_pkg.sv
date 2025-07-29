@@ -74,27 +74,33 @@ package cosim_pkg;
   // kac tane eleman eklendiyse sayisini inserted_elements_o'ya yazar.
   import "DPI-C" function void get_log_reg_write(
     output commit_log_reg_item_t log_reg_write_o[CommitLogEntries],
-    output int inserted_elements_o,
-    input int processor_id = 0
+    output int inserted_elements_o
   );
 
   // son yapilan step'teki memory read islemleri
   import "DPI-C" function  void get_log_mem_read(
     output commit_log_mem_item_t log_mem_read_o[CommitLogEntries],
-    output int inserted_elements_o,
-    input int processor_id = 0
+    output int inserted_elements_o
   );
 
   // son yapilan step'teki memory write islemleri.
   import "DPI-C" function void get_log_mem_write(
     output commit_log_mem_item_t log_mem_write_o[CommitLogEntries],
-    output int inserted_elements_o,
-    input int processor_id = 0
+    output int inserted_elements_o
+  );
+
+  // son islemi yapan processor'un id'si
+  import "DPI-C" function void get_proc_id(
+    output int unsigned proc_id_o
+  );
+
+  // son yurutulen instructon'un priv'i
+  import "DPI-C" function void get_priv(
+    output int unsigned priv_o
   );
 
   import "DPI-C" function void get_pc(
-    output reg_t pc_o,
-    input int processor_id = 0
+    output reg_t pc_o
   );
 
 endpackage
