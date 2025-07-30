@@ -1,7 +1,9 @@
 #ifndef TESTBENCH_IF_H
 #define TESTBENCH_IF_H
 
-#include "../../obj_dir_cosim_ornek_kullanim/cosim_ornek_kullanim__Dpi.h"
+#ifdef VERILATOR
+#include DPI_HEADER
+#else
 #include "decode.h" // for freg_t and other inttypes
 
 #ifndef UNPACKED_STRUCT_VERILOG
