@@ -33,9 +33,11 @@ void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o )
   auto item_ptr = (commit_log_reg_item_t*) log_reg_write_o;
   
   for (auto x: map_from_c_side){
-    item_ptr[num_entries].key = x.first;
-    item_ptr[num_entries].value = x.second;
-    num_entries++;
+    if (x.first != 0){ // x0'a yazma log'a eklenmiyor.
+      item_ptr[num_entries].key = x.first;
+      item_ptr[num_entries].value = x.second;
+      num_entries++;
+    }
   }
 }
 
