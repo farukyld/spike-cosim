@@ -163,7 +163,7 @@ int main()
 
         print_log(log_reg_write, log_mem_write);
 
-        fprintf(stderr,"received_commit_log:\n");
+        fprintf(stderr, BRIGHT_RED "received_commit_log:\n" DEF_COLOR);
         print_sliced_hex(received_commit_log, HEADER_SIZE + received_body_size, HEADER_FORMAT);
         unpack_commit_log_body(received_commit_log + HEADER_SIZE,
                                generated_commit_log_length,
@@ -176,8 +176,8 @@ int main()
 
         print_log(log_reg_write, log_mem_write);
 
-        printf(YELLOW "simulation logs (without packing/unpacking):\n" DEF_COLOR);
-        print_log(state->log_reg_write,state->log_mem_write);
+        // printf(YELLOW "simulation logs (without packing/unpacking):\n" DEF_COLOR);
+        // print_log(state->log_reg_write,state->log_mem_write);
 
         fprintf(stderr,"progress: %ld steps\n", progress_steps);
 
