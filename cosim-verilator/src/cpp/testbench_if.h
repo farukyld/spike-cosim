@@ -4,6 +4,15 @@
 #ifdef VERILATOR
 #include DPI_HEADER
 #else
+#include <svdpi.h>
+extern "C" void get_log_mem_read(svBitVecVal* log_mem_read_o, int* inserted_elements_o);
+extern "C" void get_log_mem_write(svBitVecVal* log_mem_write_o, int* inserted_elements_o);
+extern "C" void get_log_reg_write(svBitVecVal* log_reg_write_o, int* inserted_elements_o);
+extern "C" void get_pc(svBitVecVal* pc_o);
+extern "C" void get_priv(unsigned int* priv_o);
+extern "C" void get_proc_id(unsigned int* proc_id_o);
+extern "C" void wait_key();
+#endif
 #include "decode.h" // for freg_t and other inttypes
 
 #ifndef UNPACKED_STRUCT_VERILOG
