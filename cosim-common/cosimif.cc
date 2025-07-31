@@ -2,7 +2,11 @@
 #include "common.h"
 #include "args_reader.h"
 
-extern int launch(int argc, char **argv, char **env, bool in_cosim);
+#ifdef VERILATOR
+  extern "C" int launch(int argc, char **argv, char **env, bool in_cosim);
+#else
+  extern "C" int launch(int argc, char **argv, char **env, bool in_cosim);
+#endif
 
 #define COSIM_ARGS "COSIM_ARGS"
 
