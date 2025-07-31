@@ -7,9 +7,9 @@ extern sim_t* s_ptr;
 #ifdef VERILATOR
 #include DPI_HEADER
 #else
-void init();
-void step();
-uint8_t simulation_completed();
+extern "C" void init();
+extern "C" void step();
+extern "C" uint8_t simulation_completed();
 #endif
 
 
